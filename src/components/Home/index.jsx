@@ -9,6 +9,7 @@ import { userService } from "../Services";
 import { Modal, Button } from "react-bootstrap";
 
 import Select from 'react-select';
+import SelectOperator from "../SelectOperator";
 
 const Home = (props) => {
     const [isLoading, setIsLoading] = useState(true);
@@ -42,7 +43,6 @@ const Home = (props) => {
             GetSubCategory(currentCategory.PayID);
             setOffers(currentCategory.offers)
             let mobile = currentCategory.slug.indexOf("mobile");
-            console.log("mobile==>", mobile);
             if (mobile >= 0) {
                 setIsNumberTrue(true)
             } else {
@@ -56,7 +56,6 @@ const Home = (props) => {
 
     async function getCategories() {
         const endPoint = 'GetHomePageData';
-        console.log("history====>",history)
         const categorylists = await userService.getCategoriesList(endPoint);
         setCurrentCategory(categorylists[0]);
         setCategories(categorylists);
@@ -83,6 +82,7 @@ const Home = (props) => {
         const endPoint = 'GetOperatorDetails';
         const operatorDetails = await userService.getGetOperatorDetailsList(endPoint, number);
         plansInfo.operator = operatorDetails?.billerid;
+        setBillerid(operatorDetails?.billerid);
         setPlansInfo(plansInfo);
         setIsLoading(false);
     }
@@ -121,12 +121,20 @@ const Home = (props) => {
         operator: "",
     });
 
+    const [numberError, setNumberError] = useState('');
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         console.log("name===>", name);
         console.log("value====>", value);
-        if (name == 'number' && value.length == 10) {
-            getGetOperatorDetails(value);
+        setAllPlans([]);
+        if (name == 'number') {
+            if (/^[0-9]{10}$/.test(value)) {
+                setNumberError("");
+                getGetOperatorDetails(value);
+            } else {
+                setNumberError("Please enter a valid phone number");
+            }
+
         }
         setState((prevProps) => ({
             ...prevProps,
@@ -138,7 +146,6 @@ const Home = (props) => {
         event.preventDefault();
         const errors = validateForm(state);
         setFormErrors(errors);
-        console.log("formErrors====>", formErrors);
         console.log(state);
     };
 
@@ -199,7 +206,7 @@ const Home = (props) => {
         setSubCategory(currentSubCategory);
         setBillerid(currentSubCategory?.billerid);
         setPayNumber('');
-        console.log("eeeeeeeeeeeeeeeeee===>", currentSubCategory);
+        console.log("currentSubCategory===>", currentSubCategory);
     }
 
     const handleClose = () => setShow(false);
@@ -221,7 +228,6 @@ const Home = (props) => {
         let selectedplan = allplans[index];
         setSelectedPlan(selectedplan);
         setShow(false);
-        console.log("selectedPlan", selectedPlan);
     }
 
     const options1 = [
@@ -246,14 +252,14 @@ const Home = (props) => {
         const { name, value } = event.target;
         setPayNumber(value);
         let RegexPattern = /subCategory.RegexPattern/;
-        if(!RegexPattern.test(value)){
+        if (!RegexPattern.test(value)) {
             setEmailError(subCategory.ErrorMsg);
-        }else{
+        } else {
             setEmailError('');
         }
 
         // if(RegexPattern){
-            
+
         //     let result = '';//RegexPattern.test(value);
         //     if(result){
         //         console.log("result===>",result);
@@ -310,13 +316,9 @@ const Home = (props) => {
 
         return errors;
     }
-
-    const number = () => {
-        return (
-            <h1>hwllo</h1>
-        )
-    }
-
+    const numErrorStyle = {
+        color: 'red'
+    };
     if (isLoading) {
         return <div id="preloader">
             <div data-loader="dual-ring"></div>
@@ -324,9 +326,6 @@ const Home = (props) => {
     }
     return (
         <>
-            {/* <div id="preloader">
-                <div data-loader="dual-ring"></div>
-            </div> */}
             <div id="main-wrapper">
                 <div id="content">
                     <div className="bg-secondary">
@@ -362,15 +361,16 @@ const Home = (props) => {
                                                 <div className="mb-3">
                                                     <input type="text" className="form-control" data-bv-field="number" id="mobileNumber" required
                                                         placeholder={currentCategory.DefaultMessage} name="number" value={state.number} onChange={handleInputChange} />
+                                                    {numberError && <span style={numErrorStyle}>{numberError}</span>}
                                                 </div>
                                                 <div className="mb-3">
-                                                    <select className="form-select" id="operator" required="" name="operator" onChange={handleOperatorChange}>
+                                                    {/* <select className="form-select" id="operator" required="" name="operator" onChange={handleOperatorChange}>
                                                         <option value="">Select Your Operator</option>
                                                         {subCategoryList.map((subCategory, index) => {
                                                             return <option key={index} value={index} selected={subCategory.billerid === billerid}>{billerid} {subCategory.billerid} {subCategory.BillerName}</option>
-                                                            // return <option key={index} data-content="<img className='email' src='https://assetscdn1.paytm.com/images/catalog/operators/1644409460661.png'><span class='text-dark'>Air India Express</span>"> Chrome</option>
                                                         })}
-                                                    </select>
+                                                    </select> */}
+                                                    <SelectOperator subCategoryList={subCategoryList} billerid={billerid} plansInfo={plansInfo} handleOperatorChange={handleOperatorChange} />
                                                 </div>
                                             </>
                                         ) : (
@@ -386,9 +386,9 @@ const Home = (props) => {
                                                 <div className="mb-3">
                                                     <input type="text" className="form-control" data-bv-field="number" id="mobileNumber" required
                                                         placeholder={subCategory?.ParameterName} name="number" value={payNumber} onChange={handleNumberChange} />
-                                                        {emailError && <p>{emailError}</p>}
+                                                    {emailError && <p>{emailError}</p>}
                                                 </div>
-                                                
+
                                             </>
                                         )}
 
@@ -494,6 +494,7 @@ const Home = (props) => {
                                             return <option key={index} value={subCategory.billerid}>{subCategory.BillerName}</option>
                                         })}
                                     </select>
+
                                 </div>
                                 <div className="col-12 col-sm-6 col-lg-3">
                                     <select className="form-select" required="" name="circle" value={state.circle} onChange={handlePlanChange}>
@@ -697,12 +698,13 @@ const Home = (props) => {
                     <div className="modal-body">
                         <form className="row g-3 mb-4" method="post">
                             <div className="col-12 col-sm-6 col-lg-4">
-                                <select className="form-select" required="" name="operator" value={plansInfo.operator} onChange={handlePlanChange}>
+                                {/* <select className="form-select" required="" name="operator" value={plansInfo.operator} onChange={handlePlanChange}>
                                     <option value="">Select Your Operator</option>
                                     {subCategoryList.map((subCategory, index) => {
                                         return <option key={index} value={subCategory.billerid} selected={subCategory.billerid == billerid}>{billerid} {subCategory.billerid} {subCategory.BillerName}</option>
                                     })}
-                                </select>
+                                </select> */}
+                                <SelectOperator subCategoryList={subCategoryList} billerid={billerid} plansInfo={plansInfo} handleOperatorChange={handleOperatorChange} />
                             </div>
                             <div className="col-12 col-sm-6 col-lg-4">
                                 <select className="form-select" required="" name="circle" value={plansInfo.circle} onChange={handlePlanChange}>
