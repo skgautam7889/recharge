@@ -56,6 +56,7 @@ const Home = (props) => {
 
     async function getCategories() {
         const endPoint = 'GetHomePageData';
+        console.log("history====>",history)
         const categorylists = await userService.getCategoriesList(endPoint);
         setCurrentCategory(categorylists[0]);
         setCategories(categorylists);
@@ -74,7 +75,6 @@ const Home = (props) => {
             return subcategory;
         });
         setSubCategoryList(options1);
-        console.log("options1===>", options1);
         setIsLoading(false);
 
     }
