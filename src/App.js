@@ -3,6 +3,8 @@ import './App.css';
 import Home from './components/Home';
 import { HashRouter, Route, Redirect, useHistory } from "react-router-dom";
 import { userService } from './components/Services';
+import Header from './components/Layouts/Header';
+import Footer from './components/Layouts/Footer';
 // import OrderSummary from './components/OrderSummary';
 // import Payment from './components/Payment';
 // import PaymentSuccess from './components/PaymentSuccess';
@@ -35,12 +37,14 @@ function App() {
   }
   return (
     <HashRouter>
+      <Header />
       <Route exact path="/:slug" categorylists={categories} component={Home} />
       {/* <Route exact path='/home' component={Home} />
       <Route exact path="/order-summary" component={OrderSummary} />
       <Route exact path="/payment" component={Payment} />
       <Route exact path= '/payment-success' component={PaymentSuccess} /> */}
-      <Redirect to='/home' />
+      {/* <Redirect to='/home' /> */}
+      <Footer/>
     </HashRouter>
   );
 }
