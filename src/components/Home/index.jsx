@@ -150,6 +150,7 @@ const Home = (props) => {
     };
 
     const handleClick = (index) => () => {
+        setState({ type: '', number: '', operator:'' })
         let category = categories[index];
         history.push(category.slug);
         setCurrentCategory(category);
