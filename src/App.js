@@ -39,11 +39,12 @@ function App() {
     <HashRouter>
       <Header />
       <Route exact path="/:slug" categorylists={categories} component={Home} />
-      <Route exact path='/home' component={Home} />
+      {/* <Route exact path='/' component={Home} /> */}
+      <Route exact path='/' component={Home} />
       {/* <Route exact path="/order-summary" component={OrderSummary} />
       <Route exact path="/payment" component={Payment} />
       <Route exact path= '/payment-success' component={PaymentSuccess} /> */}
-      <Redirect to='/home' />
+      <Redirect to='/' />
       <Footer/>
     </HashRouter>
   );
