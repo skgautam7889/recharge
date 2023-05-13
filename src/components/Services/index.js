@@ -1,5 +1,6 @@
 const apiUrl = 'https://utility.pinkytravels.com/api/UtilityAPI/';
-
+const FetchBillPlan = 'FetchBillPlan';
+const headers = { 'Content-Type': 'application/json' };
 export const userService = {
     getCategoriesList: async (endPoint) => {
         try {
@@ -76,6 +77,21 @@ export const userService = {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data)
+            });
+            const json = await response.json();
+            // const circles = json.circles;
+            return json;
+        } catch (error) {
+            console.error(error);
+        }
+    },
+    fetchBillPlanList: async (data) => {
+
+        try {
+            const response = await fetch(apiUrl + FetchBillPlan, {
+                method: 'POST',
+                headers:headers,
+                body: JSON.stringify(data),
             });
             const json = await response.json();
             // const circles = json.circles;

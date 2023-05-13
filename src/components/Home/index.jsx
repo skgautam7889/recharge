@@ -33,6 +33,11 @@ const Home = (props) => {
     const [isNumberTrue, setIsNumberTrue] = useState(true);
     const [offers, setOffers] = useState([]);
     const [billerid, setBillerid] = useState('');
+    const [errorBillerName, setErrorBillerName] = useState('');
+    const [billPayForm, setBillPayForm] = useState({
+        billerInfo: "",
+        ConnectionNumber: ""
+    });
     useEffect(() => {
         getCategories();
     }, []);
@@ -81,7 +86,9 @@ const Home = (props) => {
         const endPoint = 'GetOperatorDetails';
         const operatorDetails = await userService.getGetOperatorDetailsList(endPoint, number);
         plansInfo.operator = operatorDetails?.billerid;
+        plansInfo.circle = operatorDetails?.circle_name;
         setBillerid(operatorDetails?.billerid);
+        // setCircleName(operatorDetails.circle_name);
         setPlansInfo(plansInfo);
         setIsLoading(false);
     }
@@ -133,7 +140,6 @@ const Home = (props) => {
             } else {
                 setNumberError("Please enter a valid phone number");
             }
-
         }
         setState((prevProps) => ({
             ...prevProps,
@@ -149,11 +155,17 @@ const Home = (props) => {
     };
 
     const handleClick = (index) => () => {
-        setState({ type: '', number: '', operator:'' })
+        setState({ type: '', number: '', operator: '' })
         let category = categories[index];
         history.push(category.slug);
         setCurrentCategory(category);
-        GetSubCategory(category.PayID)
+        GetSubCategory(category.PayID);
+        setErrorBillerName("")
+        setBillPayForm({
+            billerInfo: "",
+            ConnectionNumber: ""
+        })
+        setSubCategory(null);
     };
 
     async function GetCircle(billerid) {
@@ -165,6 +177,12 @@ const Home = (props) => {
         setIsLoading(false);
         // setShow(true);
 
+    }
+    async function getFetchBillPlan(data) {
+        setIsLoading(true);
+        const fetchBillPlanData = await userService.fetchBillPlanList(data);
+        console.log("fetchBillPlanData===>", fetchBillPlanData);
+        setIsLoading(false);
     }
     async function FetchPrepaidPlan(billerid, circleName) {
         setIsLoading(true);
@@ -206,12 +224,18 @@ const Home = (props) => {
         setSubCategory(currentSubCategory);
         setBillerid(currentSubCategory?.billerid);
         setPayNumber('');
+        setErrorBillerName("")
+        setBillPayForm({
+            billerInfo: "",
+            ConnectionNumber: ""
+        })
         console.log("currentSubCategory===>", currentSubCategory);
     }
 
     const handleClose = () => setShow(false);
     const handleShow = () => {
         (plansInfo.operator) ? GetCircle(plansInfo.operator) : console.log("operator not available");
+        if (plansInfo.operator && plansInfo.circle) { FetchPrepaidPlan(plansInfo.operator, plansInfo.circle) };
         setShow(true);
     }
     const handlePlanTypeChange = (event) => {
@@ -283,14 +307,53 @@ const Home = (props) => {
         //     [name]: value
         // }));
     };
+    function validateNumber() {
 
-    const Option = ({ label, value, image }) => {
-        return (
-            <div>
-                <img src={image} alt={label} width="50" height="50" />
-                {label}
-            </div>
-        );
+    }
+    const handleInputBillPaymentChange = (event) => {
+        const { name, value } = event.target;
+        // console.log("name===>", name);
+        // console.log("value====>", value);
+        console.log("SubCategory=====>", subCategory);
+        if (subCategory) {
+            const RegexPattern = new RegExp(subCategory.RegexPattern);
+            console.log("RegexPattern===>", RegexPattern);
+            if (RegexPattern.test(value)) {
+                console.log("If");
+                setErrorBillerName("")
+                const data = {
+                    ConnectionNumber: value,
+                    ParameterName: subCategory.ParameterName,
+                    BillerID: subCategory.billerid,
+                    firstname: "amar",
+                    lastname: "gupta",
+                    mobile: "8882288881",
+                    email: "amar@pinkitravels.com",
+                    IPAddress: "61.246.34.128",
+                    MACAddress: "11-AC-58-21-1B-AA"
+                }
+                getFetchBillPlan(data);
+            } else {
+                setErrorBillerName(subCategory.ErrorMsg);
+                console.log("else");
+            }
+        } else {
+            setErrorBillerName("Please select any one operator");
+        }
+
+        console.log("SubCategory=====>", subCategory);
+        if (name == 'number') {
+            if (/^[0-9]{10}$/.test(value)) {
+                setNumberError("");
+                getGetOperatorDetails(value);
+            } else {
+                setNumberError("Please enter a valid phone number");
+            }
+        }
+        setBillPayForm((prevProps) => ({
+            ...prevProps,
+            [name]: value
+        }));
     };
     function validateForm(values) {
         let errors = {};
@@ -384,15 +447,15 @@ const Home = (props) => {
                                                     </select>
                                                 </div>
                                                 <div className="mb-3">
-                                                    <input type="text" className="form-control" data-bv-field="number" id="mobileNumber" required
-                                                        placeholder={subCategory?.ParameterName} name="number" value={payNumber} onChange={handleNumberChange} />
-                                                    {emailError && <p>{emailError}</p>}
+                                                    <input type="text" className="form-control" data-bv-field="ConnectionNumber" id="ConnectionNumber" required value={billPayForm.ConnectionNumber} onChange={handleInputBillPaymentChange}
+                                                        placeholder={subCategory?.ParameterName} name="ConnectionNumber" />
+                                                    {errorBillerName && <span style={numErrorStyle}>{errorBillerName}</span>}
                                                 </div>
 
                                             </>
                                         )}
 
-                                        <div className="mb-3">
+                                        {/* <div className="mb-3">
                                             <Select
                                                 options={subCategoryList}
                                                 styles={customStyles}
@@ -402,7 +465,7 @@ const Home = (props) => {
                                                 optionWidth={50}
 
                                             />
-                                        </div>
+                                        </div> */}
                                         <div className="input-group mb-3"> <span className="input-group-text">$</span> <div onClick={handleShow} href="#"
                                             className="view-plans-link">View Plans</div>
                                             <input className="form-control" id="amount" placeholder="Enter Amount" value={selectedPlan?.amount} required type="text" />
@@ -477,7 +540,7 @@ const Home = (props) => {
             </div>
             <a id="back-to-top" data-bs-toggle="tooltip" title="Back to Top" href=""><i
                 className="fa fa-chevron-up"></i></a>
-            
+
             <Modal size="xl" show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Browse Plans</Modal.Title>
@@ -519,9 +582,9 @@ const Home = (props) => {
 
                                 <div className="col-4 col-lg-2 text-5 text-center">Validity Days</div>
 
-                                <div className="col-3 col-lg-1 text-5 text-center">Plan Category</div>
+                                <div className="col-3 col-lg-1 text-5 text-center">Category</div>
 
-                                <div className="col-5 col-lg-3 text-5 text-center">Plan Description</div>
+                                <div className="col-5 col-lg-3 text-5 text-center">Description</div>
 
                                 <hr className="my-4" />
                             </div>

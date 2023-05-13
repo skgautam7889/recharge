@@ -1,5 +1,4 @@
 const SelectOperator = (props) => {
-    console.log("props=====>", props)
     return (
         <select className="form-select" id="operator" required="" name="operator" onChange={props.handleOperatorChange}>
             <option value="">Select Your Operator</option>
