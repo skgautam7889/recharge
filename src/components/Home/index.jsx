@@ -38,6 +38,8 @@ const Home = (props) => {
         billerInfo: "",
         ConnectionNumber: ""
     });
+    const [connectionNumberError, setConnectionNumberError] = useState('');
+    const [billInformation, setBilIInformation] = useState('');
     useEffect(() => {
         getCategories();
     }, []);
@@ -46,7 +48,7 @@ const Home = (props) => {
         if (currentCategory?.PayID) {
             GetSubCategory(currentCategory.PayID);
             setOffers(currentCategory.offers)
-            let mobile = currentCategory.slug.indexOf("mobile");
+            let mobile = currentCategory.slug.indexOf("mobile-prepaid");
             if (mobile >= 0) {
                 setIsNumberTrue(true)
             } else {
@@ -153,8 +155,45 @@ const Home = (props) => {
         setFormErrors(errors);
         console.log(state);
     };
+    const handleBillPaymentSubmit = (event) => {
+        event.preventDefault();
+        setErrorBillerName('');
+        console.log("billPayForm===>", );
+
+        if (!billPayForm.billerInfo) {
+            setErrorBillerName("Please select any one operator!");
+            return false;
+        }
+        if (!billPayForm.ConnectionNumber) {
+            setConnectionNumberError("Please Enter connectionNumber!");
+            return false;
+        }
+        const RegexPattern = new RegExp(billPayForm.billerInfo.RegexPattern);
+        console.log("RegexPattern===>", RegexPattern);
+        if (!RegexPattern.test(billPayForm.ConnectionNumber)) {
+            console.log("If");
+            setConnectionNumberError(subCategory.ErrorMsg);
+            console.log("else");
+            return false;
+
+        }
+        const data = {
+            ConnectionNumber: billPayForm.ConnectionNumber,
+            ParameterName: billPayForm.billerInfo.ParameterName,
+            BillerID: billPayForm.billerInfo.billerid,
+            firstname: "amar",
+            lastname: "gupta",
+            mobile: "8882288881",
+            email: "amar@pinkitravels.com",
+            IPAddress: "61.246.34.128",
+            MACAddress: "11-AC-58-21-1B-AA"
+        }
+        getFetchBillPlan(data);
+    }
 
     const handleClick = (index) => () => {
+        setErrorBillerName('');
+        setConnectionNumberError('');
         setState({ type: '', number: '', operator: '' })
         let category = categories[index];
         history.push(category.slug);
@@ -181,6 +220,7 @@ const Home = (props) => {
     async function getFetchBillPlan(data) {
         setIsLoading(true);
         const fetchBillPlanData = await userService.fetchBillPlanList(data);
+        setBilIInformation(fetchBillPlanData);
         console.log("fetchBillPlanData===>", fetchBillPlanData);
         setIsLoading(false);
     }
@@ -220,16 +260,16 @@ const Home = (props) => {
 
 
     const handleOperatorChange = (e) => {
-        let currentSubCategory = subCategoryList[e.target.value];
-        setSubCategory(currentSubCategory);
-        setBillerid(currentSubCategory?.billerid);
+
         setPayNumber('');
         setErrorBillerName("")
+        let currentSubCategory = subCategoryList[e.target.value];
         setBillPayForm({
-            billerInfo: "",
+            billerInfo: currentSubCategory,
             ConnectionNumber: ""
         })
-        console.log("currentSubCategory===>", currentSubCategory);
+        setSubCategory(currentSubCategory);
+        setBillerid(currentSubCategory?.billerid);
     }
 
     const handleClose = () => setShow(false);
@@ -314,42 +354,31 @@ const Home = (props) => {
         const { name, value } = event.target;
         // console.log("name===>", name);
         // console.log("value====>", value);
-        console.log("SubCategory=====>", subCategory);
-        if (subCategory) {
-            const RegexPattern = new RegExp(subCategory.RegexPattern);
-            console.log("RegexPattern===>", RegexPattern);
-            if (RegexPattern.test(value)) {
-                console.log("If");
-                setErrorBillerName("")
-                const data = {
-                    ConnectionNumber: value,
-                    ParameterName: subCategory.ParameterName,
-                    BillerID: subCategory.billerid,
-                    firstname: "amar",
-                    lastname: "gupta",
-                    mobile: "8882288881",
-                    email: "amar@pinkitravels.com",
-                    IPAddress: "61.246.34.128",
-                    MACAddress: "11-AC-58-21-1B-AA"
-                }
-                getFetchBillPlan(data);
-            } else {
-                setErrorBillerName(subCategory.ErrorMsg);
-                console.log("else");
-            }
-        } else {
-            setErrorBillerName("Please select any one operator");
-        }
+        // console.log("SubCategory=====>", subCategory);
+        // if (subCategory) {
+        //     const RegexPattern = new RegExp(subCategory.RegexPattern);
+        //     console.log("RegexPattern===>", RegexPattern);
+        //     if (RegexPattern.test(value)) {
+        //         console.log("If");
+        //         setConnectionNumberError("")
 
-        console.log("SubCategory=====>", subCategory);
-        if (name == 'number') {
-            if (/^[0-9]{10}$/.test(value)) {
-                setNumberError("");
-                getGetOperatorDetails(value);
-            } else {
-                setNumberError("Please enter a valid phone number");
-            }
-        }
+        //     } else {
+        //         setConnectionNumberError(subCategory.ErrorMsg);
+        //         console.log("else");
+        //     }
+        // } else {
+        //     setConnectionNumberError("Please select any one operator!");
+        // }
+
+        // console.log("SubCategory=====>", subCategory);
+        // if (name == 'number') {
+        //     if (/^[0-9]{10}$/.test(value)) {
+        //         setNumberError("");
+        //         getGetOperatorDetails(value);
+        //     } else {
+        //         setNumberError("Please enter a valid phone number");
+        //     }
+        // }
         setBillPayForm((prevProps) => ({
             ...prevProps,
             [name]: value
@@ -407,73 +436,67 @@ const Home = (props) => {
                             <div className="row g-4">
                                 <div className="col-lg-4 col-xxl-5">
                                     <h2 className="text-4 mb-3">{currentCategory.Payheading}</h2>
-                                    <form id="recharge-bill" method="post" onSubmit={handleSubmit}>
-                                        {/* <div className="mb-3">
-                                            <div className="form-check form-check-inline">
-                                                <input id="prepaid" name="rechargeBillpayment" className="form-check-input" required
-                                                    type="radio" />
-                                                <label className="form-check-label" htmlFor="prepaid">Prepaid</label>
+                                    {isNumberTrue ? (
+                                        <form id="recharge-bill" method="post" onSubmit={handleSubmit}>
+                                            <div className="mb-3">
+                                                <input type="text" className="form-control" data-bv-field="number" id="mobileNumber" required
+                                                    placeholder={currentCategory.DefaultMessage} name="number" value={state.number} onChange={handleInputChange} />
+                                                {numberError && <span style={numErrorStyle}>{numberError}</span>}
                                             </div>
-                                            <div className="form-check form-check-inline">
-                                                <input id="postpaid" name="rechargeBillpayment" className="form-check-input" required type="radio" />
-                                                <label className="form-check-label" htmlFor="postpaid">Postpaid</label>
-                                            </div>
-                                        </div> */}
-                                        {isNumberTrue ? (
-                                            <>
-                                                <div className="mb-3">
-                                                    <input type="text" className="form-control" data-bv-field="number" id="mobileNumber" required
-                                                        placeholder={currentCategory.DefaultMessage} name="number" value={state.number} onChange={handleInputChange} />
-                                                    {numberError && <span style={numErrorStyle}>{numberError}</span>}
-                                                </div>
-                                                <div className="mb-3">
-                                                    {/* <select className="form-select" id="operator" required="" name="operator" onChange={handleOperatorChange}>
+                                            <div className="mb-3">
+                                                {/* <select className="form-select" id="operator" required="" name="operator" onChange={handleOperatorChange}>
                                                         <option value="">Select Your Operator</option>
                                                         {subCategoryList.map((subCategory, index) => {
                                                             return <option key={index} value={index} selected={subCategory.billerid === billerid}>{billerid} {subCategory.billerid} {subCategory.BillerName}</option>
                                                         })}
                                                     </select> */}
-                                                    <SelectOperator subCategoryList={subCategoryList} billerid={billerid} plansInfo={plansInfo} handleOperatorChange={handleOperatorChange} />
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <div className="mb-3">
-                                                    <select className="form-select" id="operator" name="operator" required="" onChange={handleOperatorChange}>
-                                                        <option value="">Select Your Operator</option>
-                                                        {subCategoryList.map((subCategory, index) => {
-                                                            return <option key={index} value={index}>{subCategory.BillerName}</option>
-                                                        })}
-                                                    </select>
-                                                </div>
-                                                <div className="mb-3">
-                                                    <input type="text" className="form-control" data-bv-field="ConnectionNumber" id="ConnectionNumber" required value={billPayForm.ConnectionNumber} onChange={handleInputBillPaymentChange}
-                                                        placeholder={subCategory?.ParameterName} name="ConnectionNumber" />
-                                                    {errorBillerName && <span style={numErrorStyle}>{errorBillerName}</span>}
-                                                </div>
+                                                <SelectOperator subCategoryList={subCategoryList} billerid={billerid} plansInfo={plansInfo} handleOperatorChange={handleOperatorChange} />
+                                            </div>
+                                            <div className="input-group mb-3"> <span className="input-group-text">$</span> <div onClick={handleShow} href="#"
+                                                className="view-plans-link">View Plans</div>
+                                                <input className="form-control" id="amount" placeholder="Enter Amount" value={selectedPlan?.amount} required type="text" />
+                                            </div>
+                                            <div className="d-grid">
+                                                <button className="btn btn-primary">Continue to Recharge</button>
+                                            </div>
+                                        </form>
+                                    ) : (
+                                        <form id="recharge-bill" method="post" onSubmit={handleBillPaymentSubmit}>
 
-                                            </>
-                                        )}
+                                            <div className="mb-3">
+                                                <select className="form-select" id="operator" name="operator" required="" onChange={handleOperatorChange}>
+                                                    <option value="">Select Your Operator</option>
+                                                    {subCategoryList.map((subCategory, index) => {
+                                                        return <option key={index} value={index} selected={billPayForm?.billerInfo?.billerid=== subCategory.billerid} >{subCategory.BillerName}</option>
+                                                    })}
+                                                </select>
+                                                {errorBillerName && <span style={numErrorStyle}>{errorBillerName}</span>}
+                                            </div>
+                                            <div className="mb-3">
 
-                                        {/* <div className="mb-3">
-                                            <Select
-                                                options={subCategoryList}
-                                                styles={customStyles}
-                                                placeholder="Select a fruit..."
-                                                isSearchable={true}
-                                                optionHeight={50}
-                                                optionWidth={50}
+                                                <input type="text" className="form-control" data-bv-field="ConnectionNumber" id="ConnectionNumber" required value={billPayForm.ConnectionNumber} onChange={handleInputBillPaymentChange}
+                                                    placeholder={subCategory?.ParameterName} name="ConnectionNumber" />
+                                                {connectionNumberError && <span style={numErrorStyle}>{connectionNumberError}</span>}
 
-                                            />
-                                        </div> */}
-                                        <div className="input-group mb-3"> <span className="input-group-text">$</span> <div onClick={handleShow} href="#"
-                                            className="view-plans-link">View Plans</div>
-                                            <input className="form-control" id="amount" placeholder="Enter Amount" value={selectedPlan?.amount} required type="text" />
-                                        </div>
-                                        <div className="d-grid">
-                                            <button className="btn btn-primary">Continue to Recharge</button>
-                                        </div>
-                                    </form>
+                                            </div>
+                                            {/* <div className="input-group mb-3">
+                                                <input className="form-control" id="amount" placeholder="Enter Amount" value={selectedPlan?.amount} required type="text" />
+                                            </div> */}
+                                            <div className="d-grid">
+                                                <button className="btn btn-primary">Continue to Pay</button>
+                                            </div>
+                                        </form>
+
+                                    )}
+
+                                    {billInformation ? (
+                                        <pre>
+                                            <div>{JSON.stringify(billInformation, null, 2)}</div>
+                                        </pre>
+                                    ) : (
+                                        <div>not available data</div>
+
+                                    )}
                                 </div>
                                 <div className="col-lg-8 col-xxl-7">
                                     <OfferImageSlider offers={offers} />
