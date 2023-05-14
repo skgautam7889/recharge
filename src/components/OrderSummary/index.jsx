@@ -28,7 +28,7 @@ const OrderSummary = (props) => {
         let discount = 0;
 
         if (!isDiscountApply) {
-            if (couponCode != "Code") {
+            if (couponCode != "CODE2023") {
                 setCouponCodeError("Invalid coupon code")
             } else {
                 discount = 10;

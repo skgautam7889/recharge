@@ -173,7 +173,6 @@ const Home = (props) => {
             setPlanError("Please select Plan");
             return false;
         }
-        return false;
         selectedPlan.total_pay_amount = selectedPlan.amount;
         
 
