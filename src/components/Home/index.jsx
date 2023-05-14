@@ -123,13 +123,15 @@ const Home = (props) => {
     //     playholder = currentCategory.DefaultMessage;
     //     // console.log("offers====>",offers);
     // }
-    const [state, setState] = useState({
+    const [rechargeForm, setRechargeForm] = useState({
         type: "",
         number: "",
-        operator: "",
+        operator_info: "",
     });
 
     const [numberError, setNumberError] = useState('');
+    const [planError, setPlanError] = useState('');
+
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         console.log("name===>", name);
@@ -143,20 +145,48 @@ const Home = (props) => {
                 setNumberError("Please enter a valid phone number");
             }
         }
-        setState((prevProps) => ({
+        setRechargeForm((prevProps) => ({
             ...prevProps,
             [name]: value
         }));
     };
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(state);
+
+        // const recharge_info = {
+        //     selectedPlan: selectedPlan,
+        //     recharge_form: rechargeForm,
+        //     number: rechargeForm.number,
+        //     plan_description: selectedPlan.plan_description
+        // }
+        console.log("selectedPlan==>",selectedPlan);
+        selectedPlan.number = rechargeForm.number;
+        if(!rechargeForm.number){
+            setNumberError("Please enter number")
+            return false;
+        }
+        if (!/^[0-9]{10}$/.test(rechargeForm.number)) {
+            setNumberError("Please enter a valid phone number");
+            return false;
+        }
+        if(selectedPlan.length==0){
+            setPlanError("Please select Plan");
+            return false;
+        }
+        return false;
+        selectedPlan.total_pay_amount = selectedPlan.amount;
+        
+
+        const recharge_information = JSON.stringify(selectedPlan);
+        localStorage.setItem('recharge_information', recharge_information);
+        history.push('/pay/order-summary');
+
         // history.push('pay/order-summary',{state});
     };
     const handleBillPaymentSubmit = (event) => {
         event.preventDefault();
         setErrorBillerName('');
-        console.log("billPayForm===>", );
+        console.log("billPayForm===>",);
 
         if (!billPayForm.billerInfo) {
             setErrorBillerName("Please select any one operator!");
@@ -192,7 +222,7 @@ const Home = (props) => {
     const handleClick = (index) => () => {
         setErrorBillerName('');
         setConnectionNumberError('');
-        setState({ type: '', number: '', operator: '' })
+        setRechargeForm({ type: '', number: '', operator_info: '' })
         let category = categories[index];
         history.push(category.slug);
         setCurrentCategory(category);
@@ -258,7 +288,6 @@ const Home = (props) => {
 
 
     const handleOperatorChange = (e) => {
-
         setPayNumber('');
         setErrorBillerName("")
         let currentSubCategory = subCategoryList[e.target.value];
@@ -340,7 +369,7 @@ const Home = (props) => {
         // if (name == 'number' && value.length == 10) {
         //     getGetOperatorDetails(value);
         // }
-        // setState((prevProps) => ({
+        // setRechargeForm((prevProps) => ({
         //     ...prevProps,
         //     [name]: value
         // }));
@@ -387,7 +416,7 @@ const Home = (props) => {
                                         <form id="recharge-bill" method="post" onSubmit={handleSubmit}>
                                             <div className="mb-3">
                                                 <input type="text" className="form-control" data-bv-field="number" id="mobileNumber" required
-                                                    placeholder={currentCategory.DefaultMessage} name="number" value={state.number} onChange={handleInputChange} />
+                                                    placeholder={currentCategory.DefaultMessage} name="number" value={rechargeForm.number} onChange={handleInputChange} />
                                                 {numberError && <span style={numErrorStyle}>{numberError}</span>}
                                             </div>
                                             <div className="mb-3">
@@ -402,7 +431,9 @@ const Home = (props) => {
                                             <div className="input-group mb-3"> <span className="input-group-text">$</span> <div onClick={handleShow} href="#"
                                                 className="view-plans-link">View Plans</div>
                                                 <input className="form-control" id="amount" placeholder="Enter Amount" value={selectedPlan?.amount} required type="text" />
+                                                
                                             </div>
+                                            {planError && <span style={numErrorStyle}>{planError}</span>}
                                             <div className="d-grid">
                                                 <button className="btn btn-primary">Continue to Recharge</button>
                                             </div>
@@ -414,7 +445,7 @@ const Home = (props) => {
                                                 <select className="form-select" id="operator" name="operator" required="" onChange={handleOperatorChange}>
                                                     <option value="">Select Your Operator</option>
                                                     {subCategoryList.map((subCategory, index) => {
-                                                        return <option key={index} value={index} selected={billPayForm?.billerInfo?.billerid=== subCategory.billerid} >{subCategory.BillerName}</option>
+                                                        return <option key={index} value={index} selected={billPayForm?.billerInfo?.billerid === subCategory.billerid} >{subCategory.BillerName}</option>
                                                     })}
                                                 </select>
                                                 {errorBillerName && <span style={numErrorStyle}>{errorBillerName}</span>}

@@ -1,4 +1,25 @@
+import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+
 const Payment = () => {
+    const location = useLocation();
+    const [selectedPlan, setSelectedPlan] = useState(null);
+    const [isDiscountApply, setIsDiscountApply] = useState(false);
+    const [discounAmount, setDiscounAmount] = useState(0);
+    useEffect(() => {
+        const recharge_information = localStorage.getItem('recharge_information');
+        if(recharge_information){
+
+        // localStorage.setItem('recharge_information', JSON.stringify(recharge_info));
+        // const updated_recharge_information = localStorage.getItem('recharge_information');
+        setSelectedPlan(JSON.parse(recharge_information))
+        console.log("selectedPlan====>", selectedPlan);
+        }
+    }, []);
+    const paypentPayForm = (event) => {
+        event.preventDefault();
+        console.log("selectedPlan====>", selectedPlan);
+    };
     return (
         <>
             <div id="content">
@@ -11,7 +32,7 @@ const Payment = () => {
                                     <div className="progress">
                                         <div className="progress-bar"></div>
                                     </div>
-                                    <a href="recharge-order.html" className="step-dot"></a> </div>
+                                    <a href="" className="step-dot"></a> </div>
                                 <div className="col-3 step complete">
                                     <div className="step-name">Summary</div>
                                     <div className="progress">
@@ -47,7 +68,7 @@ const Payment = () => {
                                         <div className="tab-content" id="myTabContentVertical">
                                             <div className="tab-pane fade show active" id="firstTab" role="tabpanel" aria-labelledby="first-tab">
                                                 <h3 className="text-5 mb-4">Enter Card Details</h3>
-                                                <form id="payment" method="post">
+                                                <form id="payment" method="post" onSubmit={paypentPayForm}>
                                                     <div className="row g-3">
                                                         <div className="col-12">
                                                             <label className="form-label" htmlFor="cardNumber">Enter Debit / Credit Card Number</label>
@@ -128,7 +149,7 @@ const Payment = () => {
                                                                     <label className="form-check-label" htmlFor="save-card">Save my card Details.</label>
                                                             </div>
                                                         </div>
-                                                        <div className="col-12 d-grid"> <a className="btn btn-primary" href="recharge-payment-success.html">Proceed to Pay $135</a> </div>
+                                                        <div className="col-12 d-grid"> <button className="btn btn-primary" href="#">Proceed to Pay ${selectedPlan?.total_pay_amount}</button> </div>
                                                     </div>
                                                 </form>
                                             </div>
@@ -137,7 +158,7 @@ const Payment = () => {
                                                     <p className="lead">Pay easily, fast and secure with PayPal.</p>
                                                 </div>
                                                 <p className="alert alert-info mb-4"><i className="fas fa-info-circle"></i> You will be redirected to PayPal to complete your payment securely.</p>
-                                                <div className="d-grid"><a className="btn btn-primary d-flex align-items-center justify-content-center" href="recharge-payment-success.html"><i className="fab fa-paypal fa-2x me-2"></i> Pay via PayPal</a></div>
+                                                <div className="d-grid"><a className="btn btn-primary d-flex align-items-center justify-content-center" href=""><i className="fab fa-paypal fa-2x me-2"></i> Pay via PayPal</a></div>
                                             </div>
                                         </div>
                                     </div>
@@ -145,11 +166,11 @@ const Payment = () => {
                                         <div className="bg-light-2 rounded p-4 mb-4">
                                             <h3 className="text-5 mb-4">Payable Amount</h3>
                                             <ul className="list-unstyled">
-                                                <li className="mb-2">Amount <span className="float-end text-4 fw-500 text-dark">$150</span></li>
-                                                <li className="mb-2">Discount <span className="text-success">(10% Off!)</span> <span className="float-end text-4 fw-500 text-dark">-$15</span></li>
+                                                <li className="mb-2">Amount <span className="float-end text-4 fw-500 text-dark">${selectedPlan?.amount}</span></li>
+                                                <li className="mb-2">Discount <span className="text-success">({selectedPlan?.discount} Off!)</span> <span className="float-end text-4 fw-500 text-dark">-${selectedPlan?.discount}</span></li>
                                             </ul>
                                             <hr />
-                                                <div className="text-dark text-4 fw-500 py-1"> Total Amount<span className="float-end text-7">$135</span></div>
+                                                <div className="text-dark text-4 fw-500 py-1"> Total Amount<span className="float-end text-7">${selectedPlan?.total_pay_amount}</span></div>
                                         </div>
                                         <div className="bg-light-2 rounded p-4 d-none d-md-block">
                                             <h3 className="text-5 mb-3">We value your Privacy.</h3>
