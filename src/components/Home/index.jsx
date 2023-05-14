@@ -174,7 +174,7 @@ const Home = (props) => {
             return false;
         }
         selectedPlan.total_pay_amount = selectedPlan.amount;
-        
+        selectedPlan.discount = 0;
 
         const recharge_information = JSON.stringify(selectedPlan);
         localStorage.setItem('recharge_information', recharge_information);

@@ -53,6 +53,7 @@ const OrderSummary = (props) => {
             setCouponCodeError('');
             setIsDiscountApply(false);
             selectedPlan.total_pay_amount = selectedPlan.amount;
+            selectedPlan.discount = 0;
             setSelectedPlan(selectedPlan);
             localStorage.setItem('recharge_information', JSON.stringify(selectedPlan));
             setDiscounAmount(0);

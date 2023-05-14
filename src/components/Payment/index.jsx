@@ -167,7 +167,9 @@ const Payment = () => {
                                             <h3 className="text-5 mb-4">Payable Amount</h3>
                                             <ul className="list-unstyled">
                                                 <li className="mb-2">Amount <span className="float-end text-4 fw-500 text-dark">${selectedPlan?.amount}</span></li>
-                                                <li className="mb-2">Discount <span className="text-success">({selectedPlan?.discount} Off!)</span> <span className="float-end text-4 fw-500 text-dark">-${selectedPlan?.discount}</span></li>
+                                                {
+                                                    selectedPlan?.discount ? (<li className="mb-2">Discount <span className="text-success">({selectedPlan?.discount} Off!)</span> <span className="float-end text-4 fw-500 text-dark">-${selectedPlan?.discount}</span></li>):(<span></span>)
+                                                }
                                             </ul>
                                             <hr />
                                                 <div className="text-dark text-4 fw-500 py-1"> Total Amount<span className="float-end text-7">${selectedPlan?.total_pay_amount}</span></div>
