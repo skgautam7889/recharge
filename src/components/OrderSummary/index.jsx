@@ -1,6 +1,9 @@
-import Footer from "../Footer";
+import { useLocation } from 'react-router-dom';
+import { useContext } from 'react';
 
 const OrderSummary = () => {
+    const location = useLocation();
+    console.log("location===>",location);
     return (
         <>
             <div id="content">
@@ -85,9 +88,8 @@ const OrderSummary = () => {
                         </div>
                     </div>
                 </div>
-                <Footer />
             </div>
-            <a id="back-to-top" data-bs-toggle="tooltip" title="Back to Top" href="javascript:void(0)"><i className="fa fa-chevron-up"></i></a>
+            <a id="back-to-top" data-bs-toggle="tooltip" title="Back to Top" href=""><i className="fa fa-chevron-up"></i></a>
 
         </>
     )

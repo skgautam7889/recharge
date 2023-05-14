@@ -9,7 +9,7 @@ import { Modal, Button } from "react-bootstrap";
 
 import Select from 'react-select';
 import SelectOperator from "../SelectOperator";
-
+import { useContext } from 'react';
 const Home = (props) => {
     const [isLoading, setIsLoading] = useState(true);
     const [categories, setCategories] = useState([]);
@@ -148,12 +148,10 @@ const Home = (props) => {
             [name]: value
         }));
     };
-    const [formErrors, setFormErrors] = useState({});
     const handleSubmit = (event) => {
         event.preventDefault();
-        const errors = validateForm(state);
-        setFormErrors(errors);
         console.log(state);
+        // history.push('pay/order-summary',{state});
     };
     const handleBillPaymentSubmit = (event) => {
         event.preventDefault();
@@ -352,62 +350,11 @@ const Home = (props) => {
     }
     const handleInputBillPaymentChange = (event) => {
         const { name, value } = event.target;
-        // console.log("name===>", name);
-        // console.log("value====>", value);
-        // console.log("SubCategory=====>", subCategory);
-        // if (subCategory) {
-        //     const RegexPattern = new RegExp(subCategory.RegexPattern);
-        //     console.log("RegexPattern===>", RegexPattern);
-        //     if (RegexPattern.test(value)) {
-        //         console.log("If");
-        //         setConnectionNumberError("")
-
-        //     } else {
-        //         setConnectionNumberError(subCategory.ErrorMsg);
-        //         console.log("else");
-        //     }
-        // } else {
-        //     setConnectionNumberError("Please select any one operator!");
-        // }
-
-        // console.log("SubCategory=====>", subCategory);
-        // if (name == 'number') {
-        //     if (/^[0-9]{10}$/.test(value)) {
-        //         setNumberError("");
-        //         getGetOperatorDetails(value);
-        //     } else {
-        //         setNumberError("Please enter a valid phone number");
-        //     }
-        // }
         setBillPayForm((prevProps) => ({
             ...prevProps,
             [name]: value
         }));
     };
-    function validateForm(values) {
-        let errors = {};
-
-        // Validate name field
-        if (!values.name) {
-            errors.name = 'Name is required';
-        }
-
-        // Validate email field
-        if (!values.email) {
-            errors.email = 'Email is required';
-        } else if (!/\S+@\S+\.\S+/.test(values.email)) {
-            errors.email = 'Email is invalid';
-        }
-
-        // Validate password field
-        if (!values.password) {
-            errors.password = 'Password is required';
-        } else if (values.password.length < 8) {
-            errors.password = 'Password must be at least 8 characters long';
-        }
-
-        return errors;
-    }
     const numErrorStyle = {
         color: 'red'
     };

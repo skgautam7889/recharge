@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import Home from './components/Home';
-import { HashRouter, Route, Redirect, useHistory } from "react-router-dom";
+import { HashRouter, Route, Redirect, useHistory, useParams } from "react-router-dom";
 import { userService } from './components/Services';
 import Header from './components/Layouts/Header';
 import Footer from './components/Layouts/Footer';
-// import OrderSummary from './components/OrderSummary';
-// import Payment from './components/Payment';
-// import PaymentSuccess from './components/PaymentSuccess';
+import OrderSummary from './components/OrderSummary';
+import Payment from './components/Payment';
+import PaymentSuccess from './components/PaymentSuccess';
 function App() {
   const history = useHistory();
   const [data, setData] = useState(null);
@@ -23,9 +23,9 @@ function App() {
       setUrl(newurl);
       setData(data);
       setIsLoading(false);
-      if (!isLoading && data) {
-        history.push('/dth');
-      }
+      // if (!isLoading && data) {
+      //   history.push('/dth');
+      // }
     }
     getCategories();
   }, []);
@@ -41,10 +41,10 @@ function App() {
       <Route exact path="/:slug" categorylists={categories} component={Home} />
       {/* <Route exact path='/' component={Home} /> */}
       <Route exact path='/' component={Home} />
-      {/* <Route exact path="/order-summary" component={OrderSummary} />
+      <Route exact path="/pay/order-summary" component={OrderSummary} />
       <Route exact path="/payment" component={Payment} />
-      <Route exact path= '/payment-success' component={PaymentSuccess} /> */}
-      <Redirect to='/' />
+      <Route exact path= '/payment-success' component={PaymentSuccess} />
+      {/* <Redirect to='/' /> */}
       <Footer/>
     </HashRouter>
   );

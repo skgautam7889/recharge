@@ -6,7 +6,7 @@ const Header = () => {
             <div className="container">
                 <div className="header-row">
                     <div className="header-column justify-content-start">
-                        <div className="logo me-2 me-lg-3"> <Link to='/home' className="d-flex" title="HTML Template"><img
+                        <div className="logo me-2 me-lg-3"> <Link to='/' className="d-flex" title="HTML Template"><img
                             src="assets/images/logo.png" alt="Quickai" /></Link> </div>
                     </div>
                     <div className="header-column justify-content-end">
@@ -14,7 +14,7 @@ const Header = () => {
                         <nav className="primary-menu navbar navbar-expand-lg">
                             <div id="header-nav" className="collapse navbar-collapse">
                                 <ul className="navbar-nav">
-                                    <li><Link className="dropdown-item" to='/home'>Home</Link></li>
+                                    <li><Link className="dropdown-item" to='/'>Home</Link></li>
                                 </ul>
                             </div>
                         </nav>
