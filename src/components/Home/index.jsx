@@ -68,7 +68,7 @@ const Home = (props) => {
         setIsLoading(false);
     }
     async function GetSubCategory(categoryId) {
-        setIsLoading(true);
+        // setIsLoading(true);
         const endPoint = 'GetSubCategory';
         const subCategoryList = await userService.getGetSubCategoryList(endPoint, categoryId);
 
@@ -80,7 +80,7 @@ const Home = (props) => {
             return subcategory;
         });
         setSubCategoryList(options1);
-        setIsLoading(false);
+        // setIsLoading(false);
 
     }
     async function getGetOperatorDetails(number) {
@@ -182,11 +182,9 @@ const Home = (props) => {
 
         // history.push('pay/order-summary',{state});
     };
-    const handleBillPaymentSubmit = (event) => {
+    const handleBillPaymentSubmit = async (event) => {
         event.preventDefault();
         setErrorBillerName('');
-        console.log("billPayForm===>",);
-
         if (!billPayForm.billerInfo) {
             setErrorBillerName("Please select any one operator!");
             return false;
@@ -216,6 +214,16 @@ const Home = (props) => {
             MACAddress: "11-AC-58-21-1B-AA"
         }
         getFetchBillPlan(data);
+        const fetchBillPlanData = await userService.fetchBillPlanList(data);
+        if(fetchBillPlanData){
+            localStorage.removeItem('recharge_information');
+            const billplan_information = JSON.stringify(fetchBillPlanData);
+            localStorage.setItem('billplan_information', billplan_information);
+            localStorage.setItem('is_recharge', false);
+            history.push('/pay/order-summary');
+            console.log("fetchBillPlanData==>",fetchBillPlanData)
+        }
+        
     }
 
     const handleClick = (index) => () => {
@@ -225,13 +233,14 @@ const Home = (props) => {
         let category = categories[index];
         history.push(category.slug);
         setCurrentCategory(category);
+        setSubCategory(null);
         GetSubCategory(category.PayID);
         setErrorBillerName("")
         setBillPayForm({
             billerInfo: "",
             ConnectionNumber: ""
         })
-        setSubCategory(null);
+        
     };
 
     async function GetCircle(billerid) {
