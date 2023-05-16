@@ -216,7 +216,9 @@ const Home = (props) => {
         getFetchBillPlan(data);
         const fetchBillPlanData = await userService.fetchBillPlanList(data);
         if(fetchBillPlanData){
+
             localStorage.removeItem('recharge_information');
+            fetchBillPlanData.ConnectionNumber = billPayForm.ConnectionNumber;
             const billplan_information = JSON.stringify(fetchBillPlanData);
             localStorage.setItem('billplan_information', billplan_information);
             localStorage.setItem('is_recharge', false);

@@ -164,11 +164,15 @@ const OrderSummary = (props) => {
                                     <h3 className="text-5 fw-400 mb-3 mb-sm-4 text-center">Confirm Bill Details</h3>
                                     <hr className="mx-n3 mx-sm-n5 mb-4" />
                                     <div className="row">
-                                        <p className="col-sm text-muted mb-0 mb-sm-3">Mobile Number:</p>
-                                        <p className="col-sm text-sm-end fw-500"> {selectedPlan?.number} {billplanInformation?.biller_name}</p>
+                                        <p className="col-sm text-muted mb-0 mb-sm-3">Connection Number:</p>
+                                        <p className="col-sm text-sm-end fw-500">{billplanInformation?.ConnectionNumber}</p>
                                     </div>
                                     <div className="row">
-                                        <p className="col-sm text-muted mb-0 mb-sm-3">Operator/Circle:</p>
+                                        <p className="col-sm text-muted mb-0 mb-sm-3">Category:</p>
+                                        <p className="col-sm text-sm-end fw-500">{billplanInformation?.biller_category}</p>
+                                    </div>
+                                    <div className="row">
+                                        <p className="col-sm text-muted mb-0 mb-sm-3">Operator:</p>
                                         <p className="col-sm text-sm-end fw-500">{billplanInformation?.biller_name}</p>
                                     </div>
                                     <div className="row">
