@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
+import { userService } from "../Services";
 
 const OrderSummary = (props) => {
     const location = useLocation();
@@ -10,6 +11,9 @@ const OrderSummary = (props) => {
     const [couponCodeError, setCouponCodeError] = useState('');
     const [isRecharge, setIsRecharge] = useState(false);
     const [billplanInformation, setBillplanInformation] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [coupons, setCoupons] = useState([]);
+    const [isBtnLoading, setIsBtnLoading] = useState(false);
     useEffect(() => {
         const recharge_information = localStorage.getItem('recharge_information');
 
@@ -20,28 +24,53 @@ const OrderSummary = (props) => {
             console.log("selectedPlan====>", selectedPlan);
         }
         const billplan_information = localStorage.getItem('billplan_information');
-        if(billplan_information){
+        if (billplan_information) {
             const bill_info = JSON.parse(billplan_information);
             setBillplanInformation(bill_info)
-            const is_recharge = localStorage.getItem('is_recharge');
-            setIsRecharge(is_recharge);
-            console.log("billplanInformation========================>",billplanInformation);
-            console.log("isRecharge====>",isRecharge);
+            console.log("billplanInformation========================>", billplanInformation);
+
         }
-            
+        // const is_recharge = localStorage.getItem('is_recharge');
+        // if(is_recharge){
+        //     setIsRecharge(JSON.parse(is_recharge).is_recharge);
+
+        //     console.log("isRecharge====>",isRecharge);
+        // }
+
+        getCouponCodeList();
     }, []);
+
+    async function getCouponCodeList() {
+        setIsLoading(true);
+        const data = {
+            "Enquiryno": selectedPlan?.planid,
+            "Product": "UTILITY",
+            "Type": "Mobile Prepaid"
+        }
+        const cuponCodeList = await userService.DisplayCouponCode(data);
+        setCoupons(cuponCodeList.Coupons)
+        setIsLoading(false);
+        // setShow(true);
+    }
 
     const handelCouponCodeChange = (event) => {
         setCouponCode(event.target.value)
     }
-    const applyCouponCode = (e) => {
+    const applyCouponCode = async (e) => {
         let discount = 0;
-
         if (!isDiscountApply) {
-            if (couponCode != "CODE2023") {
+            const data = {
+                "Enquiryno": selectedPlan.planid,
+                "Product": "Utility",
+                "Type": "Mobile Prepaid",
+                "Amount":selectedPlan.amount,
+                CouponCode: couponCode
+            }
+            const ApplyCodeResponse = await userService.ApplyCouponCode(data);
+            if (!ApplyCodeResponse?.CouponDiscount) {
                 setCouponCodeError("Invalid coupon code")
             } else {
-                discount = 10;
+                discount = ApplyCodeResponse?.CouponDiscount;
                 setDiscounAmount(discount);
                 setIsDiscountApply(true);
                 selectedPlan.total_pay_amount = (selectedPlan.total_pay_amount - discount).toFixed(2);
@@ -51,6 +80,7 @@ const OrderSummary = (props) => {
 
             }
         }
+        
     }
     const removeBtn = {
         marginLeft: ' 60px',
@@ -68,6 +98,11 @@ const OrderSummary = (props) => {
             localStorage.setItem('recharge_information', JSON.stringify(selectedPlan));
             setDiscounAmount(0);
         }
+    }
+    if (isLoading) {
+        return <div id="preloader">
+            <div data-loader="dual-ring"></div>
+        </div>;
     }
     return (
         <>
@@ -106,7 +141,7 @@ const OrderSummary = (props) => {
                         <div className="col-lg-12 text-center mt-5">
                             <h2 className="text-8 mb-4">Order Summary</h2>
                         </div>
-                        {(isRecharge == true) ? (
+                        {(selectedPlan?.is_recharge == true) ? (
                             <div className="col-md-8 col-lg-7 col-xl-6 mx-auto">
                                 <div className="bg-white shadow-sm rounded text-3 p-3 pt-sm-4 pb-sm-5 px-sm-5 mb-0 mb-sm-4">
                                     <h3 className="text-5 fw-400 mb-3 mb-sm-4 text-center">Confirm Recharge Details</h3>
@@ -145,15 +180,25 @@ const OrderSummary = (props) => {
                                     <div id="couponCode" className="bg-light-3 p-4 rounded collapse">
                                         <h3 className="text-4">Coupon Code</h3>
                                         <div className="input-group">
-                                            <input className="form-control" placeholder="Coupon Code" value={couponCode} name='coupon_code' onChange={handelCouponCodeChange} aria-label="Promo Code" type="text" />
+                                            <input className="form-control" placeholder="Coupon Code" value={couponCode} name='coupon_code' onChange={ e=>{setCouponCode(e.target.value)}} aria-label="Promo Code" type="text" />
                                             <button className="btn btn-secondary" onClick={applyCouponCode} type="submit">Apply</button>
                                         </div>
                                         {
-                                            isDiscountApply ? (<div>
-                                                <label style={{ color: 'green' }} >{discounAmount} Rupay discount has been applied.</label>
-                                                <span style={removeBtn} onClick={removeCouponCode} >Remove</span>
-                                            </div>) : (<span style={{ color: 'red' }}>{couponCodeError}</span>)
+                                            isDiscountApply ? (<><div>
+                                                <label style={{ color: 'green' }}>{discounAmount} Rupay discount has been applied.</label>
+                                                <span style={removeBtn} onClick={removeCouponCode}>Remove</span>
+                                            </div><hr /></>) : (<><span style={{ color: 'red' }}>{couponCodeError}</span><hr/></>)
+                                            
                                         }
+                                        {coupons && coupons.map((coupon) => (
+                                            <div key={coupon.CouponCode}>
+                                                <span style={{fontWeight: 'bold',lineHeight:2.0}} >{coupon.CouponCode}</span> 
+                                                &nbsp;
+                                                <span>{coupon.Remarks}</span>
+                                                <hr />
+                                            </div>
+                                        ))}
+                                       
                                     </div>
                                     <div className="d-grid mt-4"><Link to='/pay/payment' className="btn btn-primary">Make Payment</Link></div>
                                 </div>
@@ -183,18 +228,19 @@ const OrderSummary = (props) => {
                                         <p className="col-sm text-muted mb-0 mb-sm-3">Validity:</p>
                                         <p className="col-sm text-sm-end fw-500">{selectedPlan?.validity}</p>
                                     </div>
+
                                     <div className="row">
-                                        <p className="col-sm text-muted mb-0 mb-sm-3">Amount:</p>
-                                        <p className="col-sm text-sm-end fw-500">${selectedPlan?.amount} </p>
+                                        <p className="col-sm text-muted mb-0 mb-sm-3">Validation Date:</p>
+                                        <p className="col-sm text-sm-end fw-500">{billplanInformation?.validation_date}</p>
                                     </div>
                                     <div className="row">
-                                        <p className="col-12 text-muted mb-0">Plan Description:</p>
-                                        <p className="col-12 text-1">{selectedPlan?.plan_description}</p>
+                                        <p className="col-sm text-muted mb-0 mb-sm-3">Valid Until:</p>
+                                        <p className="col-sm text-sm-end fw-500">{billplanInformation?.valid_until}</p>
                                     </div>
                                     <div className="bg-light-4 rounded p-3">
                                         <div className="row">
                                             <div className="col-sm text-3 fw-600">Payment Amount:</div>
-                                            <div className="col-sm text-sm-end text-5 fw-500">${selectedPlan?.total_pay_amount}</div>
+                                            <div className="col-sm text-sm-end text-5 fw-500">${billplanInformation?.billlist[0]?.net_billamount}</div>
                                         </div>
                                     </div>
                                     <p className="text-center my-4"><a className="btn-link" data-bs-toggle="collapse" href="#couponCode" aria-expanded="false" aria-controls="couponCode">Apply a Coupon Code</a></p>

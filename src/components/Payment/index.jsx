@@ -1,25 +1,49 @@
 import { Link, useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-
+import { userService } from "../Services";
 const Payment = () => {
     const location = useLocation();
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [isDiscountApply, setIsDiscountApply] = useState(false);
     const [discounAmount, setDiscounAmount] = useState(0);
+    const [paymentMethods, setPaymentMethods] = useState([]);
     useEffect(() => {
         const recharge_information = localStorage.getItem('recharge_information');
-        if(recharge_information){
+        if (recharge_information) {
 
-        // localStorage.setItem('recharge_information', JSON.stringify(recharge_info));
-        // const updated_recharge_information = localStorage.getItem('recharge_information');
-        setSelectedPlan(JSON.parse(recharge_information))
-        console.log("selectedPlan====>", selectedPlan);
+            // localStorage.setItem('recharge_information', JSON.stringify(recharge_info));
+            // const updated_recharge_information = localStorage.getItem('recharge_information');
+            setSelectedPlan(JSON.parse(recharge_information))
+            getPaymentMethodList("RELI00000MUM03");
+            console.log("paymentMethods=====>",paymentMethods);
         }
     }, []);
     const paypentPayForm = (event) => {
         event.preventDefault();
         console.log("selectedPlan====>", selectedPlan);
     };
+    async function getPaymentMethodList(billerid) {
+        const paymentMethodList = await userService.getPaymentMethodList(billerid);
+        setPaymentMethods(paymentMethodList);
+    }
+
+
+    const months = [
+        { 'id': 1, name: "January" },
+        { 'id': 2, name: "February" },
+        { 'id': 3, name: "March" },
+        { 'id': 4, name: "April" },
+        { 'id': 5, name: "May" },
+        { 'id': 6, name: "June" },
+        { 'id': 7, name: "July" },
+        { 'id': 8, name: "August" },
+        { 'id': 9, name: "September" },
+        { 'id': 10, name: "October" },
+        { 'id': 11, name: "November" },
+        { 'id': 12, name: "December" },
+    ]
+    var years = Array.from(Array(2051 - new Date().getFullYear()), (_, i) => (i + new Date().getFullYear()).toString())
+
     return (
         <>
             <div id="content">
@@ -62,9 +86,14 @@ const Payment = () => {
                                 <div className="row gx-5">
                                     <div className="col-md-7 col-lg-7 order-1 order-md-0">
                                         <ul className="nav nav-tabs mb-4 nav-fill" id="myTab" role="tablist">
+                                            
                                             <li className="nav-item"> <a className="nav-link text-4 lh-lg active" id="first-tab" data-bs-toggle="tab" href="#firstTab" role="tab" aria-controls="firstTab" aria-selected="true">Credit/Debit Cards</a> </li>
                                             <li className="nav-item"> <a className="nav-link text-4 lh-lg" id="second-tab" data-bs-toggle="tab" href="#secondTab" role="tab" aria-controls="secondTab" aria-selected="false">PayPal</a> </li>
+                                            {/* {paymentMethods && paymentMethods.map((payment) => {
+                                                <li>Hiii</li>  
+                                            })} */}
                                         </ul>
+                                        
                                         <div className="tab-content" id="myTabContentVertical">
                                             <div className="tab-pane fade show active" id="firstTab" role="tabpanel" aria-labelledby="first-tab">
                                                 <h3 className="text-5 mb-4">Enter Card Details</h3>
@@ -80,17 +109,11 @@ const Payment = () => {
                                                                 <select id="expiryMonth" className="form-select" required="">
                                                                     <option value="">Expiry Month</option>
                                                                     <option value="1">January</option>
-                                                                    <option value="2">February</option>
-                                                                    <option value="3">March</option>
-                                                                    <option value="1">April</option>
-                                                                    <option value="1">May</option>
-                                                                    <option value="1">June</option>
-                                                                    <option value="1">July</option>
-                                                                    <option value="1">August</option>
-                                                                    <option value="1">September</option>
-                                                                    <option value="1">October</option>
-                                                                    <option value="1">November</option>
-                                                                    <option value="1">December</option>
+                                                                    {
+                                                                        months && months.map((month, index) => (
+                                                                            <option key={index} value={month.id}>{month.name}</option>
+                                                                        ))
+                                                                    }
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -99,39 +122,11 @@ const Payment = () => {
                                                                 <label className="form-label" htmlFor="expiryYear">Expiry Year</label>
                                                                 <select id="expiryYear" className="form-select" required="">
                                                                     <option value="">Expiry Year</option>
-                                                                    <option>2018</option>
-                                                                    <option>2019</option>
-                                                                    <option>2020</option>
-                                                                    <option>2021</option>
-                                                                    <option>2022</option>
-                                                                    <option>2023</option>
-                                                                    <option>2024</option>
-                                                                    <option>2025</option>
-                                                                    <option>2026</option>
-                                                                    <option>2027</option>
-                                                                    <option>2028</option>
-                                                                    <option>2029</option>
-                                                                    <option>2030</option>
-                                                                    <option>2031</option>
-                                                                    <option>2032</option>
-                                                                    <option>2033</option>
-                                                                    <option>2034</option>
-                                                                    <option>2035</option>
-                                                                    <option>2036</option>
-                                                                    <option>2037</option>
-                                                                    <option>2038</option>
-                                                                    <option>2039</option>
-                                                                    <option>2040</option>
-                                                                    <option>2041</option>
-                                                                    <option>2042</option>
-                                                                    <option>2043</option>
-                                                                    <option>2044</option>
-                                                                    <option>2045</option>
-                                                                    <option>2046</option>
-                                                                    <option>2047</option>
-                                                                    <option>2048</option>
-                                                                    <option>2049</option>
-                                                                    <option>2050</option>
+                                                                    {
+                                                                        years && years.map((year, index) => (
+                                                                            <option key={index}>{year}</option>
+                                                                        ))
+                                                                    }
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -146,7 +141,7 @@ const Payment = () => {
                                                         <div className="col-12">
                                                             <div className="form-check">
                                                                 <input id="save-card" name="savecard" className="form-check-input" type="checkbox" />
-                                                                    <label className="form-check-label" htmlFor="save-card">Save my card Details.</label>
+                                                                <label className="form-check-label" htmlFor="save-card">Save my card Details.</label>
                                                             </div>
                                                         </div>
                                                         <div className="col-12 d-grid"> <button className="btn btn-primary" href="#">Proceed to Pay ${selectedPlan?.total_pay_amount}</button> </div>
@@ -154,7 +149,7 @@ const Payment = () => {
                                                 </form>
                                             </div>
                                             <div className="tab-pane fade" id="secondTab" role="tabpanel" aria-labelledby="second-tab">
-                                                <div className="text-center"> <img className="img-fluid" src="images/paypal-logo.png" alt="Paypal Logo" title="Pay easily, fast and secure with PayPal." />
+                                                <div className="text-center"> <img className="img-fluid" src="assets/images/paypal-logo.png" alt="Paypal Logo" title="Pay easily, fast and secure with PayPal." />
                                                     <p className="lead">Pay easily, fast and secure with PayPal.</p>
                                                 </div>
                                                 <p className="alert alert-info mb-4"><i className="fas fa-info-circle"></i> You will be redirected to PayPal to complete your payment securely.</p>
@@ -165,14 +160,20 @@ const Payment = () => {
                                     <div className="col-md-5 col-lg-5 order-0 order-md-1">
                                         <div className="bg-light-2 rounded p-4 mb-4">
                                             <h3 className="text-5 mb-4">Payable Amount</h3>
+                                            {
+                                                paymentMethods && paymentMethods.map((payment)=>(
+                                                    <h1></h1>
+                                                ))
+                                            }
+
                                             <ul className="list-unstyled">
                                                 <li className="mb-2">Amount <span className="float-end text-4 fw-500 text-dark">${selectedPlan?.amount}</span></li>
                                                 {
-                                                    selectedPlan?.discount ? (<li className="mb-2">Discount <span className="text-success">({selectedPlan?.discount} Off!)</span> <span className="float-end text-4 fw-500 text-dark">-${selectedPlan?.discount}</span></li>):(<span></span>)
+                                                    selectedPlan?.discount ? (<li className="mb-2">Discount <span className="text-success">({selectedPlan?.discount} Off!)</span> <span className="float-end text-4 fw-500 text-dark">-${selectedPlan?.discount}</span></li>) : (<span></span>)
                                                 }
                                             </ul>
                                             <hr />
-                                                <div className="text-dark text-4 fw-500 py-1"> Total Amount<span className="float-end text-7">${selectedPlan?.total_pay_amount}</span></div>
+                                            <div className="text-dark text-4 fw-500 py-1"> Total Amount<span className="float-end text-7">${selectedPlan?.total_pay_amount}</span></div>
                                         </div>
                                         <div className="bg-light-2 rounded p-4 d-none d-md-block">
                                             <h3 className="text-5 mb-3">We value your Privacy.</h3>

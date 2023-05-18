@@ -1,5 +1,8 @@
 const apiUrl = 'https://utility.pinkytravels.com/api/UtilityAPI/';
 const FetchBillPlan = 'FetchBillPlan';
+const DisplayCouponCode = "DisplayCouponCode";
+const ApplyCouponCode = "ApplyCouponCode";
+const getPaymentMethod = "GetPaymentMethod";
 const headers = { 'Content-Type': 'application/json' };
 export const userService = {
     getCategoriesList: async (endPoint) => {
@@ -48,7 +51,6 @@ export const userService = {
                 },
             });
             const json = await response.json();
-            // const subCategoryList = json.categorylists;
             return json;
         } catch (error) {
             console.error(error);
@@ -79,7 +81,6 @@ export const userService = {
                 body: JSON.stringify(data)
             });
             const json = await response.json();
-            // const circles = json.circles;
             return json;
         } catch (error) {
             console.error(error);
@@ -94,8 +95,45 @@ export const userService = {
                 body: JSON.stringify(data),
             });
             const json = await response.json();
-            // const circles = json.circles;
             return json;
+        } catch (error) {
+            console.error(error);
+        }
+    },
+    DisplayCouponCode: async (data) => {
+        try {
+            const response = await fetch(apiUrl + DisplayCouponCode, {
+                method: 'POST',
+                headers:headers,
+                body: JSON.stringify(data),
+            });
+            const json = await response.json();
+            return json;
+        } catch (error) {
+            console.error(error);
+        }
+    },
+    ApplyCouponCode: async (data) => {
+        try {
+            const response = await fetch(apiUrl + ApplyCouponCode, {
+                method: 'POST',
+                headers:headers,
+                body: JSON.stringify(data),
+            });
+            const json = await response.json();
+            return json;
+        } catch (error) {
+            console.error(error);
+        }
+    },
+    getPaymentMethodList: async (billerid) => {
+        try {
+            const response = await fetch(apiUrl + getPaymentMethod+"?billerid="+billerid, {
+                method: 'POST',
+                headers:headers,
+            });
+            const json = await response.json();
+            return json?.paymethodoption;
         } catch (error) {
             console.error(error);
         }
