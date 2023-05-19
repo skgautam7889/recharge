@@ -34,10 +34,11 @@ const Home = (props) => {
     const [offers, setOffers] = useState([]);
     const [billerid, setBillerid] = useState('');
     const [errorBillerName, setErrorBillerName] = useState('');
+    const [chargeableAmount, setChargeableAmount] = useState(0);
     const [billPayForm, setBillPayForm] = useState({
         billerInfo: "",
         ConnectionNumber: "",
-        amount: 0,
+        // amount: 0,
     });
     const [connectionNumberError, setConnectionNumberError] = useState('');
     const [billInformation, setBilIInformation] = useState('');
@@ -200,7 +201,6 @@ const Home = (props) => {
             return false;
         }
         const RegexPattern = new RegExp(billPayForm.billerInfo.RegexPattern);
-        console.log("RegexPattern===>", RegexPattern);
         if (!RegexPattern.test(billPayForm.ConnectionNumber)) {
             console.log("If");
             setConnectionNumberError(subCategory.ErrorMsg);
@@ -219,24 +219,31 @@ const Home = (props) => {
             IPAddress: "61.246.34.128",
             MACAddress: "11-AC-58-21-1B-AA"
         }
-        getFetchBillPlan(data);
+        // getFetchBillPlan(data);
+        setIsLoading(true);
         const fetchBillPlanData = await userService.fetchBillPlanList(data);
         if (fetchBillPlanData?.validationid) {
             setBilIInformation(fetchBillPlanData);
-            setBillPayForm({ amount: fetchBillPlanData?.billlist[0]?.billamount });
-            localStorage.removeItem('recharge_information');
-            fetchBillPlanData.ConnectionNumber = billPayForm.ConnectionNumber;
-            fetchBillPlanData.amount = billPayForm.amount;
-            const billplan_information = JSON.stringify(fetchBillPlanData);
-            localStorage.setItem('billplan_information', billplan_information);
-            localStorage.setItem('is_recharge', false);
+            setChargeableAmount(fetchBillPlanData?.billlist[0]?.billamount);
+            // setBillPayForm({ amount: fetchBillPlanData?.billlist[0]?.billamount });
+            // localStorage.removeItem('recharge_information');
+            // fetchBillPlanData.ConnectionNumber = billPayForm.ConnectionNumber;
+            // fetchBillPlanData.amount = billPayForm.amount;
+            // const billplan_information = JSON.stringify(fetchBillPlanData);
+            // localStorage.setItem('billplan_information', billplan_information);
+            // localStorage.setItem('is_recharge', false);
             // history.push('/pay/order-summary');
-            console.log("fetchBillPlanData==>", fetchBillPlanData?.billlist[0]?.billamount)
+            // console.log("fetchBillPlanData==>", fetchBillPlanData?.billlist[0]?.billamount)
+        }else{
+            console.log("invalid connection number=======>")
+            setConnectionNumberError('invalid connection number');
         }
+        setIsLoading(false);
     }
     const payBillPayment =(event) => {
         event.preventDefault();
         setErrorBillerName('');
+        console.log("billPayForm===>",billPayForm);
         // if (!billPayForm.billerInfo) {
         //     setErrorBillerName("Please select any one operator!");
         //     return false;
@@ -245,10 +252,11 @@ const Home = (props) => {
         if(billInformation?.validationid){
            
             setBilIInformation(billInformation);
-            setBillPayForm({ amount: billInformation?.billlist[0]?.billamount });
+            
             localStorage.removeItem('recharge_information');
             billInformation.ConnectionNumber = billPayForm.ConnectionNumber;
-            billInformation.amount = billPayForm.amount;
+            billInformation.amount = chargeableAmount;
+            // setBillPayForm({ amount: billInformation?.billlist[0]?.billamount,  });
             const billplan_information = JSON.stringify(billInformation);
             localStorage.setItem('billplan_information', billplan_information);
             localStorage.setItem('is_recharge', false);
@@ -271,8 +279,9 @@ const Home = (props) => {
         setBillPayForm({
             billerInfo: "",
             ConnectionNumber: "",
-            amount: 0,
+            // amount: 0,
         })
+        setChargeableAmount(0);
 
     };
 
@@ -335,7 +344,7 @@ const Home = (props) => {
         setBillPayForm({
             billerInfo: currentSubCategory,
             ConnectionNumber: "",
-            amount: 0,
+            // amount: 0,
         })
         setSubCategory(currentSubCategory);
         setBillerid(currentSubCategory?.billerid);
@@ -400,6 +409,7 @@ const Home = (props) => {
             ...prevProps,
             [name]: value
         }));
+        console.log("bill info",billPayForm);
     };
     const numErrorStyle = {
         color: 'red'
@@ -465,11 +475,11 @@ const Home = (props) => {
                                                 {connectionNumberError && <span style={numErrorStyle}>{connectionNumberError}</span>}
                                             </div>
                                             {isPartialPay ? (<div className="mb-3">
-                                                <input type="text" className="form-control" data-bv-field="amount" id="amount" readOnly value={billPayForm.amount} onChange={handleInputBillPaymentChange}
-                                                    placeholder={subCategory?.ParameterName} name="amount" />
+                                                <input type="text" className="form-control" data-bv-field="amount" id="amount" value={chargeableAmount} readOnly onChange={(event)=>setChargeableAmount(event.target.value)}
+                                                    placeholder="Amount" name="amount" />
                                             </div>) : (<div className="mb-3">
-                                                <input type="text" className="form-control" data-bv-field="amount" id="amount" value={billPayForm.amount} onChange={handleInputBillPaymentChange}
-                                                    placeholder={subCategory?.ParameterName} name="amount" />
+                                                <input type="text" className="form-control" data-bv-field="amount" id="amount" value={chargeableAmount} onChange={(event)=>setChargeableAmount(event.target.value)}
+                                                    placeholder="Amount" name="amount" />
                                             </div>)}
 
                                             {
@@ -482,14 +492,14 @@ const Home = (props) => {
 
                                     )}
 
-                                    {billInformation ? (
+                                    {/* {billInformation ? (
                                         <pre>
                                             <div>{JSON.stringify(billInformation, null, 2)}</div>
                                         </pre>
                                     ) : (
                                         <div>not available data</div>
 
-                                    )}
+                                    )} */}
                                 </div>
                                 <div className="col-lg-8 col-xxl-7">
                                     <OfferImageSlider offers={offers} />

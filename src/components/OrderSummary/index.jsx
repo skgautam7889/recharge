@@ -220,14 +220,14 @@ const OrderSummary = (props) => {
                                         <p className="col-sm text-muted mb-0 mb-sm-3">Operator:</p>
                                         <p className="col-sm text-sm-end fw-500">{billplanInformation?.biller_name}</p>
                                     </div>
-                                    <div className="row">
+                                    {/* <div className="row">
                                         <p className="col-sm text-muted mb-0 mb-sm-3">Plan:</p>
                                         <p className="col-sm text-sm-end fw-500">{selectedPlan?.plan_category_name}</p>
                                     </div>
                                     <div className="row">
                                         <p className="col-sm text-muted mb-0 mb-sm-3">Validity:</p>
                                         <p className="col-sm text-sm-end fw-500">{selectedPlan?.validity}</p>
-                                    </div>
+                                    </div> */}
 
                                     <div className="row">
                                         <p className="col-sm text-muted mb-0 mb-sm-3">Validation Date:</p>
@@ -237,13 +237,17 @@ const OrderSummary = (props) => {
                                         <p className="col-sm text-muted mb-0 mb-sm-3">Valid Until:</p>
                                         <p className="col-sm text-sm-end fw-500">{billplanInformation?.valid_until}</p>
                                     </div>
+                                    <div className="row">
+                                        <p className="col-sm text-muted mb-0 mb-sm-3">Total Payment:</p>
+                                        <p className="col-sm text-sm-end fw-500">{billplanInformation?.billlist[0]?.net_billamount}</p>
+                                    </div>
                                     <div className="bg-light-4 rounded p-3">
                                         <div className="row">
                                             <div className="col-sm text-3 fw-600">Payment Amount:</div>
-                                            <div className="col-sm text-sm-end text-5 fw-500">${billplanInformation?.billlist[0]?.net_billamount}</div>
+                                            <div className="col-sm text-sm-end text-5 fw-500">${billplanInformation?.amount}</div>
                                         </div>
                                     </div>
-                                    <p className="text-center my-4"><a className="btn-link" data-bs-toggle="collapse" href="#couponCode" aria-expanded="false" aria-controls="couponCode">Apply a Coupon Code</a></p>
+                                    {/* <p className="text-center my-4"><a className="btn-link" data-bs-toggle="collapse" href="#couponCode" aria-expanded="false" aria-controls="couponCode">Apply a Coupon Code</a></p>
                                     <div id="couponCode" className="bg-light-3 p-4 rounded collapse">
                                         <h3 className="text-4">Coupon Code</h3>
                                         <div className="input-group">
@@ -256,8 +260,8 @@ const OrderSummary = (props) => {
                                                 <span style={removeBtn} onClick={removeCouponCode} >Remove</span>
                                             </div>) : (<span style={{ color: 'red' }}>{couponCodeError}</span>)
                                         }
-                                    </div>
-                                    <div className="d-grid mt-4"><Link to='/pay/payment' className="btn btn-primary">Make Payment</Link></div>
+                                    </div> */}
+                                    <div className="d-grid mt-4"><Link className="btn btn-primary">Make Payment</Link></div>
                                 </div>
                             </div>
                         )}
