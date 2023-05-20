@@ -16,7 +16,6 @@ const OrderSummary = (props) => {
     const [isBtnLoading, setIsBtnLoading] = useState(false);
     useEffect(() => {
         const recharge_information = localStorage.getItem('recharge_information');
-
         if (recharge_information) {
             const recharge_info = JSON.parse(recharge_information);
             recharge_info.total_pay_amount = recharge_info.amount;
@@ -261,7 +260,7 @@ const OrderSummary = (props) => {
                                             </div>) : (<span style={{ color: 'red' }}>{couponCodeError}</span>)
                                         }
                                     </div> */}
-                                    <div className="d-grid mt-4"><Link className="btn btn-primary">Make Payment</Link></div>
+                                    <div className="d-grid mt-4"><Link to="/pay/payment" className="btn btn-primary">Make Payment</Link></div>
                                 </div>
                             </div>
                         )}
