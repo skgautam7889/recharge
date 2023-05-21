@@ -188,7 +188,7 @@ const Home = (props) => {
         // history.push('pay/order-summary',{state});
     };
 
-    
+
     const handleBillPaymentSubmit = async (event) => {
         event.preventDefault();
         setErrorBillerName('');
@@ -234,25 +234,25 @@ const Home = (props) => {
             // localStorage.setItem('is_recharge', false);
             // history.push('/pay/order-summary');
             // console.log("fetchBillPlanData==>", fetchBillPlanData?.billlist[0]?.billamount)
-        }else{
+        } else {
             console.log("invalid connection number=======>")
             setConnectionNumberError('invalid connection number');
         }
         setIsLoading(false);
     }
-    const payBillPayment =(event) => {
+    const payBillPayment = (event) => {
         event.preventDefault();
         setErrorBillerName('');
-        console.log("billPayForm===>",billPayForm);
+        console.log("billPayForm===>", billPayForm);
         // if (!billPayForm.billerInfo) {
         //     setErrorBillerName("Please select any one operator!");
         //     return false;
         // }
 
-        if(billInformation?.validationid){
-           
+        if (billInformation?.validationid) {
+
             setBilIInformation(billInformation);
-            
+
             localStorage.removeItem('recharge_information');
             billInformation.ConnectionNumber = billPayForm.ConnectionNumber;
             billInformation.amount = chargeableAmount;
@@ -262,8 +262,8 @@ const Home = (props) => {
             localStorage.setItem('is_recharge', false);
             history.push('/pay/order-summary');
         }
-        
-        console.log("billInformation=>",billInformation)
+
+        console.log("billInformation=>", billInformation)
     }
 
     const handleClick = (index) => () => {
@@ -409,7 +409,7 @@ const Home = (props) => {
             ...prevProps,
             [name]: value
         }));
-        console.log("bill info",billPayForm);
+        console.log("bill info", billPayForm);
     };
     const numErrorStyle = {
         color: 'red'
@@ -475,10 +475,10 @@ const Home = (props) => {
                                                 {connectionNumberError && <span style={numErrorStyle}>{connectionNumberError}</span>}
                                             </div>
                                             {isPartialPay ? (<div className="mb-3">
-                                                <input type="text" className="form-control" data-bv-field="amount" id="amount" value={chargeableAmount} readOnly onChange={(event)=>setChargeableAmount(event.target.value)}
+                                                <input type="text" className="form-control" data-bv-field="amount" id="amount" value={chargeableAmount} readOnly onChange={(event) => setChargeableAmount(event.target.value)}
                                                     placeholder="Amount" name="amount" />
                                             </div>) : (<div className="mb-3">
-                                                <input type="text" className="form-control" data-bv-field="amount" id="amount" value={chargeableAmount} onChange={(event)=>setChargeableAmount(event.target.value)}
+                                                <input type="text" className="form-control" data-bv-field="amount" id="amount" value={chargeableAmount} onChange={(event) => setChargeableAmount(event.target.value)}
                                                     placeholder="Amount" name="amount" />
                                             </div>)}
 
@@ -614,22 +614,21 @@ const Home = (props) => {
 
                                 <hr className="my-4" />
                             </div>
-                            {allplans.map((plan, index) => {
+                            {allplans && allplans.map((plan, index) => {
                                 return <div key={index} className="row align-items-center">
-                                    <div className="col-4 col-lg-2 text-5 text-primary text-center">{plan.amount}<span
-                                        className="text-1 text-muted d-block">Amount</span></div>
+                                    <div className="col-3 col-lg-2 text-5 text-primary text-center">{plan.amount}<span
+                                        className="text-1 text-muted d-block"></span></div>
 
-                                    <div className="col-4 col-lg-2 text-3 text-center">{plan.top_plan}<span className="text-1 text-muted d-block">Talktime</span>
+                                    <div className="col-3 col-lg-2 text-3 text-center">{plan.top_plan}<span className="text-1 text-muted d-block">Talktime</span>
                                     </div>
 
-                                    <div className="col-4 col-lg-2 text-3 text-center">{plan.validity} Days<span
+                                    <div className="col-3 col-lg-2 text-3 text-center">{plan.validity} Days<span
                                         className="text-1 text-muted d-block">Validity</span></div>
 
-                                    <div className="col-3 col-lg-1 my-2 my-lg-0 text-1 text-muted">{plan.plan_category_name}</div>
+                                    <div className="col-3 col-lg-2 my-2 my-lg-0 text-1 text-muted">{plan.plan_category_name}</div>
+                                    <div className="col-7 col-lg-2 my-2 my-lg-0 text-1 text-muted" style={{textAlign:'justify'}}>{plan.plan_description}</div>
 
-                                    <div className="col-5 col-lg-3 my-2 my-lg-0 text-1 text-muted">{plan.plan_description}</div>
-
-                                    <div className="col-4 col-lg-2 my-2 my-lg-0 text-end text-lg-center">
+                                    <div className="col-5 col-lg-2 my-2 my-lg-0 text-end text-lg-center">
                                         <button className="btn btn-sm btn-outline-primary shadow-none text-nowrap" onClick={() => handleRechargeClick(index)} type="submit">Recharge</button>
                                     </div>
                                     <hr className="my-4" />
