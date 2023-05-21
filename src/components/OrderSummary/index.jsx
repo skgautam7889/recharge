@@ -62,7 +62,7 @@ const OrderSummary = (props) => {
                 "Enquiryno": selectedPlan.planid,
                 "Product": "Utility",
                 "Type": "Mobile Prepaid",
-                "Amount":selectedPlan.amount,
+                "Amount": selectedPlan.amount,
                 CouponCode: couponCode
             }
             const ApplyCodeResponse = await userService.ApplyCouponCode(data);
@@ -79,7 +79,7 @@ const OrderSummary = (props) => {
 
             }
         }
-        
+
     }
     const removeBtn = {
         marginLeft: ' 60px',
@@ -179,25 +179,25 @@ const OrderSummary = (props) => {
                                     <div id="couponCode" className="bg-light-3 p-4 rounded collapse">
                                         <h3 className="text-4">Coupon Code</h3>
                                         <div className="input-group">
-                                            <input className="form-control" placeholder="Coupon Code" value={couponCode} name='coupon_code' onChange={ e=>{setCouponCode(e.target.value)}} aria-label="Promo Code" type="text" />
+                                            <input className="form-control" placeholder="Coupon Code" value={couponCode} name='coupon_code' onChange={e => { setCouponCode(e.target.value) }} aria-label="Promo Code" type="text" />
                                             <button className="btn btn-secondary" onClick={applyCouponCode} type="submit">Apply</button>
                                         </div>
                                         {
                                             isDiscountApply ? (<><div>
                                                 <label style={{ color: 'green' }}>{discounAmount} Rupay discount has been applied.</label>
                                                 <span style={removeBtn} onClick={removeCouponCode}>Remove</span>
-                                            </div><hr /></>) : (<><span style={{ color: 'red' }}>{couponCodeError}</span><hr/></>)
-                                            
+                                            </div><hr /></>) : (<><span style={{ color: 'red' }}>{couponCodeError}</span><hr /></>)
+
                                         }
                                         {coupons && coupons.map((coupon) => (
                                             <div key={coupon.CouponCode}>
-                                                <span style={{fontWeight: 'bold',lineHeight:2.0}} >{coupon.CouponCode}</span> 
+                                                <span style={{ fontWeight: 'bold', lineHeight: 2.0 }} >{coupon.CouponCode}</span>
                                                 &nbsp;
                                                 <span>{coupon.Remarks}</span>
                                                 <hr />
                                             </div>
                                         ))}
-                                       
+
                                     </div>
                                     <div className="d-grid mt-4"><Link to='/pay/payment' className="btn btn-primary">Make Payment</Link></div>
                                 </div>
@@ -208,42 +208,69 @@ const OrderSummary = (props) => {
                                     <h3 className="text-5 fw-400 mb-3 mb-sm-4 text-center">Confirm Bill Details</h3>
                                     <hr className="mx-n3 mx-sm-n5 mb-4" />
                                     <div className="row">
-                                        <p className="col-sm text-muted mb-0 mb-sm-3">Connection Number:</p>
-                                        <p className="col-sm text-sm-end fw-500">{billplanInformation?.ConnectionNumber}</p>
+                                        <div className="col-6 col-lg-6 text-3">
+                                            <p className="col-sm text-muted mb-0 mb-sm-3">Connection Number:</p>
+                                        </div>
+                                        <div className="col-6 col-lg-6 text-3">
+                                            <p className="col-sm text-sm-end fw-500 text-right">{billplanInformation?.ConnectionNumber}</p>
+                                        </div>
                                     </div>
                                     <div className="row">
-                                        <p className="col-sm text-muted mb-0 mb-sm-3">Category:</p>
-                                        <p className="col-sm text-sm-end fw-500">{billplanInformation?.biller_category}</p>
+                                        <div className="col-6 col-lg-6 text-3">
+                                            <p className="col-sm text-muted mb-0 mb-sm-3">Category:</p>
+                                        </div>
+                                        <div className="col-6 col-lg-6 text-3">
+                                            <p className="col-sm text-sm-end fw-500 text-right">{billplanInformation?.biller_category}</p>
+                                        </div>
                                     </div>
                                     <div className="row">
-                                        <p className="col-sm text-muted mb-0 mb-sm-3">Operator:</p>
-                                        <p className="col-sm text-sm-end fw-500">{billplanInformation?.biller_name}</p>
-                                    </div>
-                                    {/* <div className="row">
-                                        <p className="col-sm text-muted mb-0 mb-sm-3">Plan:</p>
-                                        <p className="col-sm text-sm-end fw-500">{selectedPlan?.plan_category_name}</p>
-                                    </div>
-                                    <div className="row">
-                                        <p className="col-sm text-muted mb-0 mb-sm-3">Validity:</p>
-                                        <p className="col-sm text-sm-end fw-500">{selectedPlan?.validity}</p>
-                                    </div> */}
-
-                                    <div className="row">
-                                        <p className="col-sm text-muted mb-0 mb-sm-3">Validation Date:</p>
-                                        <p className="col-sm text-sm-end fw-500">{billplanInformation?.validation_date}</p>
+                                        <div className="col-6 col-lg-6 text-3">
+                                            <p className="col-sm text-muted mb-0 mb-sm-3">Operator:</p>
+                                        </div>
+                                        <div className="col-6 col-lg-6 text-3">
+                                            <p className="col-sm text-sm-end fw-500 text-right">{billplanInformation?.biller_name}</p>
+                                        </div>
                                     </div>
                                     <div className="row">
-                                        <p className="col-sm text-muted mb-0 mb-sm-3">Valid Until:</p>
-                                        <p className="col-sm text-sm-end fw-500">{billplanInformation?.valid_until}</p>
+                                        <div className="col-6 col-lg-6 text-3">
+                                            <p className="col-sm text-muted mb-0 mb-sm-3">Validation Date:</p>
+                                        </div>
+                                        <div className="col-6 col-lg-6 text-3">
+                                            <p className="col-sm text-sm-end fw-500 text-right">{billplanInformation?.validation_date}</p>
+                                        </div>
                                     </div>
                                     <div className="row">
-                                        <p className="col-sm text-muted mb-0 mb-sm-3">Total Payment:</p>
-                                        <p className="col-sm text-sm-end fw-500">{billplanInformation?.billlist[0]?.net_billamount}</p>
+                                        <div className="col-6 col-lg-6 text-3">
+                                            <p className="col-sm text-muted mb-0 mb-sm-3">Valid Until:</p>
+                                        </div>
+                                        <div className="col-6 col-lg-6 text-3">
+                                            <p className="col-sm text-sm-end fw-500 text-right">{billplanInformation?.valid_until}</p>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-6 col-lg-6 text-3">
+                                            <p className="col-sm text-muted mb-0 mb-sm-3">Total Payment:</p>
+                                        </div>
+                                        <div className="col-6 col-lg-6 text-3">
+                                            <p className="col-sm text-sm-end fw-500 text-right">{billplanInformation?.billlist[0]?.net_billamount}</p>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-6 col-lg-6 text-3">
+                                            <p className="col-sm text-muted mb-0 mb-sm-3">Remaining Amount:</p>
+                                        </div>
+                                        <div className="col-6 col-lg-6 text-3">
+                                            <p className="col-sm text-sm-end fw-500 text-right">{billplanInformation?.billlist[0]?.billamount-billplanInformation?.amount}</p>
+                                        </div>
                                     </div>
                                     <div className="bg-light-4 rounded p-3">
                                         <div className="row">
-                                            <div className="col-sm text-3 fw-600">Payment Amount:</div>
-                                            <div className="col-sm text-sm-end text-5 fw-500">${billplanInformation?.amount}</div>
+                                            <div className="col-6 col-lg-6 text-3">
+                                                <div className="col-sm text-3 fw-600">Payment Amount:</div>
+                                            </div>
+                                            <div className="col-6 col-lg-6 text-3">
+                                                <div className="col-sm text-sm-end text-5 fw-500">${billplanInformation?.amount}</div>
+                                            </div>
                                         </div>
                                     </div>
                                     {/* <p className="text-center my-4"><a className="btn-link" data-bs-toggle="collapse" href="#couponCode" aria-expanded="false" aria-controls="couponCode">Apply a Coupon Code</a></p>

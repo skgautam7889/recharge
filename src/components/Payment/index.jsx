@@ -8,6 +8,7 @@ const Payment = () => {
     const [discounAmount, setDiscounAmount] = useState(0);
     const [paymentMethods, setPaymentMethods] = useState([]);
     const [billInformation, setBillInformation] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         const recharge_information = localStorage.getItem('recharge_information');
         if (recharge_information) {
@@ -33,7 +34,6 @@ const Payment = () => {
 
 
     useEffect(() => {
-
         if(selectedPlan?.billerid){
             getPaymentMethodList(selectedPlan?.billerid);
         }
@@ -49,8 +49,10 @@ const Payment = () => {
         console.log("selectedPlan====>", selectedPlan);
     };
     async function getPaymentMethodList(billerid) {
+        setIsLoading(true);
         const paymentMethodList = await userService.getPaymentMethodList(billerid);
         setPaymentMethods(paymentMethodList);
+        setIsLoading(false);
     }
 
 
@@ -81,6 +83,11 @@ const Payment = () => {
         { id: 3, name: "Phonepe", image: "https://jep-asset.akamaized.net/MyJio_Client/corefiles/jpg/ic_phonepe-01.svg" },
         { id: 4, name: "Other UPI", image: "https://static.india.com/wp-content/uploads/2022/10/UPI.jpg" },
     ];
+    if (isLoading) {
+        return <div id="preloader">
+            <div data-loader="dual-ring"></div>
+        </div>;
+    }
     return (
         <>
             <div id="content">
