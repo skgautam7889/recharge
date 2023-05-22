@@ -75,6 +75,10 @@ const Home = (props) => {
         const subCategoryList = await userService.getGetSubCategoryList(endPoint, categoryId);
 
         const options1 = subCategoryList.map((subcategory) => {
+            subcategory.billerParameters.map((billerParameter) => {
+                billerParameter.ConnectionNumber = null;
+                billerParameter.isError = false;
+            })
             subcategory.image = subcategory.BillerLogo;
             subcategory.value = subcategory.BillerName;
             subcategory.label = "hello";
@@ -192,32 +196,51 @@ const Home = (props) => {
     const handleBillPaymentSubmit = async (event) => {
         event.preventDefault();
         setErrorBillerName('');
-        if (!billPayForm.billerInfo) {
-            setErrorBillerName("Please select any one operator!");
-            return false;
-        }
-        if (!billPayForm.ConnectionNumber) {
-            setConnectionNumberError("Please Enter connectionNumber!");
-            return false;
-        }
-        const RegexPattern = new RegExp(billPayForm.billerInfo.RegexPattern);
-        if (!RegexPattern.test(billPayForm.ConnectionNumber)) {
-            console.log("If");
-            setConnectionNumberError(subCategory.ErrorMsg);
-            console.log("else");
-            return false;
+        // if (!billPayForm.billerInfo) {
+        //     setErrorBillerName("Please select any one operator!");
+        //     return false;
+        // }
+        // if (!billPayForm.ConnectionNumber) {
+        //     setConnectionNumberError("Please Enter connectionNumber!");
+        //     return false;
+        // }
+        // const RegexPattern = new RegExp(billPayForm.billerInfo.RegexPattern);
+        // if (!RegexPattern.test(billPayForm.ConnectionNumber)) {
+        //     console.log("If");
+        //     setConnectionNumberError(subCategory.ErrorMsg);
+        //     console.log("else");
+        //     return false;
 
-        }
+        // }
+        // const data = {
+        //     ConnectionNumber: billPayForm.ConnectionNumber,
+        //     ParameterName: billPayForm.billerInfo.ParameterName,
+        //     BillerID: billPayForm.billerInfo.billerid,
+        //     firstname: "amar",
+        //     lastname: "gupta",
+        //     mobile: "8882288881",
+        //     email: "amar@pinkitravels.com",
+        //     IPAddress: "61.246.34.128",
+        //     MACAddress: "11-AC-58-21-1B-AA"
+        // }
+        console.log("subCategory=>", subCategory.billerParameters);
+        const parametersListData = [];
+        subCategory.billerParameters.map((billerParameter, index) => {
+            parametersListData.push({
+                ParameterName: billerParameter.ParameterName,
+                ConnectionNumber: billerParameter.ConnectionNumber,
+            })
+        })
+        console.log("parametersListData=====>", parametersListData);
         const data = {
-            ConnectionNumber: billPayForm.ConnectionNumber,
-            ParameterName: billPayForm.billerInfo.ParameterName,
-            BillerID: billPayForm.billerInfo.billerid,
+            parametersLists: parametersListData,
+            BillerID: subCategory?.billerid,
             firstname: "amar",
             lastname: "gupta",
             mobile: "8882288881",
             email: "amar@pinkitravels.com",
             IPAddress: "61.246.34.128",
-            MACAddress: "11-AC-58-21-1B-AA"
+            MACAddress: '11-AC-58-21-1B-AA'
         }
         // getFetchBillPlan(data);
         setIsLoading(true);
@@ -254,7 +277,7 @@ const Home = (props) => {
             setBilIInformation(billInformation);
 
             localStorage.removeItem('recharge_information');
-            billInformation.ConnectionNumber = billPayForm.ConnectionNumber;
+            billInformation.ConnectionNumber = subCategory.billerParameters[0]?.ConnectionNumber;//billPayForm.ConnectionNumber;
             billInformation.amount = chargeableAmount;
             // setBillPayForm({ amount: billInformation?.billlist[0]?.billamount,  });
             const billplan_information = JSON.stringify(billInformation);
@@ -345,7 +368,14 @@ const Home = (props) => {
             billerInfo: currentSubCategory,
             ConnectionNumber: "",
             // amount: 0,
+        });
+        
+        
+        currentSubCategory.billerParameters.map((billerParameter, index) => {
+            currentSubCategory.billerParameters[index].ConnectionNumber = null;
+                
         })
+        console.log("currentSubCategory===>", currentSubCategory);
         setSubCategory(currentSubCategory);
         setBillerid(currentSubCategory?.billerid);
         (currentSubCategory?.PartialPay === "N") ? setIsPartialPay(true) : setIsPartialPay(false);
@@ -403,13 +433,30 @@ const Home = (props) => {
             setEmailError('');
         }
     };
-    const handleInputBillPaymentChange = (event) => {
-        const { name, value } = event.target;
-        setBillPayForm((prevProps) => ({
-            ...prevProps,
-            [name]: value
-        }));
-        console.log("bill info", billPayForm);
+    const handleInputBillPaymentChange = (index, event) => {
+        // const { name, value } = event.target;
+        // setBillPayForm((prevProps) => ({
+        //     ...prevProps,
+        //     [name]: value
+        // }));
+        // console.log("subCategory",subCategory.billerParameters);
+        // let billerParameter = subCategory.billerParameters[index];
+        console.log("subCategory.billerParameters[index]=>",subCategory.billerParameters[index]);
+
+        const billerParameter = subCategory.billerParameters[index];
+        const RegexPattern = new RegExp(billerParameter.RegexPattern);
+        if (!RegexPattern.test(event.target.value)) {
+            // console.log("If");
+            // setConnectionNumberError(subCategory.ErrorMsg);
+            // console.log("else");
+            billerParameter.isError = true;
+            // return false;
+
+        }
+        subCategory.billerParameters[index].ConnectionNumber = event.target.value;
+        // console.log("billerParameter===>",billerParameter);
+        // console.log("event", event.target.value);
+        // console.log("subCategory===>",subCategory);
     };
     const numErrorStyle = {
         color: 'red'
@@ -427,8 +474,10 @@ const Home = (props) => {
                         <div className="container">
                             <ul className="nav secondary-nav">
                                 {categories && categories.map((category, index) => {
-                                    return <li key={index} className="nav-item"> <div onClick={handleClick(index)} className={(category.slug == currentCategory.slug) ? 'active nav-link' : 'nav-link'} to={'/' + category.slug}><span><i
-                                        className={category.IconClassName}></i></span> {category.PayCategory}</div> </li>
+                                    if (index < 60) {
+                                        return <li key={index} className="nav-item"> <div onClick={handleClick(index)} className={(category.slug == currentCategory.slug) ? 'active nav-link' : 'nav-link'} to={'/' + category.slug}><span><i
+                                            className={category.IconClassName}></i></span> {category.PayCategory}</div> </li>
+                                    }
                                 })}
                             </ul>
                         </div>
@@ -469,11 +518,20 @@ const Home = (props) => {
                                                 </select>
                                                 {errorBillerName && <span style={numErrorStyle}>{errorBillerName}</span>}
                                             </div>
-                                            <div className="mb-3">
+                                            {
+                                                subCategory && subCategory.billerParameters && subCategory.billerParameters.map((billerParameter, index) => (
+                                                    <div className="mb-3">
+                                                        <input type="text" className="form-control" data-bv-field="ConnectionNumber" required value={billerParameter?.ConnectionNumber} onChange={(event) => handleInputBillPaymentChange(index, event)}
+                                                            placeholder={billerParameter?.ParameterName} name={billerParameter?.ConnectionNumber} />
+                                                        {billerParameter.isError && <span style={numErrorStyle}> {billerParameter?.ErrorMsg} </span>}
+                                                    </div>
+                                                ))
+                                            }
+                                            {/* <div className="mb-3">
                                                 <input type="text" className="form-control" data-bv-field="ConnectionNumber" id="ConnectionNumber" required value={billPayForm.ConnectionNumber} onChange={handleInputBillPaymentChange}
                                                     placeholder={subCategory?.ParameterName} name="ConnectionNumber" />
                                                 {connectionNumberError && <span style={numErrorStyle}>{connectionNumberError}</span>}
-                                            </div>
+                                            </div> */}
                                             {isPartialPay ? (<div className="mb-3">
                                                 <input type="text" className="form-control" data-bv-field="amount" id="amount" value={chargeableAmount} readOnly onChange={(event) => setChargeableAmount(event.target.value)}
                                                     placeholder="Amount" name="amount" />
@@ -626,7 +684,7 @@ const Home = (props) => {
                                         className="text-1 text-muted d-block">Validity</span></div>
 
                                     <div className="col-3 col-lg-2 my-2 my-lg-0 text-1 text-muted">{plan.plan_category_name}</div>
-                                    <div className="col-7 col-lg-2 my-2 my-lg-0 text-1 text-muted" style={{textAlign:'justify'}}>{plan.plan_description}</div>
+                                    <div className="col-7 col-lg-2 my-2 my-lg-0 text-1 text-muted" style={{ textAlign: 'justify' }}>{plan.plan_description}</div>
 
                                     <div className="col-5 col-lg-2 my-2 my-lg-0 text-end text-lg-center">
                                         <button className="btn btn-sm btn-outline-primary shadow-none text-nowrap" onClick={() => handleRechargeClick(index)} type="submit">Recharge</button>
