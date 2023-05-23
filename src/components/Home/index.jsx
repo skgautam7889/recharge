@@ -10,11 +10,13 @@ import { Modal, Button } from "react-bootstrap";
 import Select from 'react-select';
 import SelectOperator from "../SelectOperator";
 import { useContext } from 'react';
+import AddMoreOptions from "./AddMoreOptions";
 const Home = (props) => {
     const [isLoading, setIsLoading] = useState(true);
     const [categories, setCategories] = useState([]);
     const [subCategoryList, setSubCategoryList] = useState([]);
     const [subCategory, setSubCategory] = useState(null);
+    const [addMoreOptions, setAddMoreOptions] = useState([]);
     const [circles, setCircleList] = useState([]);
     const [plansInfo, setPlansInfo] = useState({
         operator: "",
@@ -42,6 +44,7 @@ const Home = (props) => {
     });
     const [connectionNumberError, setConnectionNumberError] = useState('');
     const [billInformation, setBilIInformation] = useState('');
+
     useEffect(() => {
         getCategories();
     }, []);
@@ -63,8 +66,14 @@ const Home = (props) => {
     const history = useHistory();
 
     async function getCategories() {
+        let addMoreBtn = [];
+
         const endPoint = 'GetHomePageData';
         const categorylists = await userService.getCategoriesList(endPoint);
+        if (categorylists && categorylists.length > 0) {
+            categorylists.map((category, index) => { if (index > 5) { category.index = index; addMoreBtn.push(category); } })
+        }
+        setAddMoreOptions(addMoreBtn);
         setCurrentCategory(categorylists[0]);
         setCategories(categorylists);
         setIsLoading(false);
@@ -369,11 +378,11 @@ const Home = (props) => {
             ConnectionNumber: "",
             // amount: 0,
         });
-        
-        
+
+
         currentSubCategory.billerParameters.map((billerParameter, index) => {
             currentSubCategory.billerParameters[index].ConnectionNumber = null;
-                
+
         })
         console.log("currentSubCategory===>", currentSubCategory);
         setSubCategory(currentSubCategory);
@@ -441,7 +450,7 @@ const Home = (props) => {
         // }));
         // console.log("subCategory",subCategory.billerParameters);
         // let billerParameter = subCategory.billerParameters[index];
-        console.log("subCategory.billerParameters[index]=>",subCategory.billerParameters[index]);
+        console.log("subCategory.billerParameters[index]=>", subCategory.billerParameters[index]);
 
         const billerParameter = subCategory.billerParameters[index];
         const RegexPattern = new RegExp(billerParameter.RegexPattern);
@@ -474,11 +483,15 @@ const Home = (props) => {
                         <div className="container">
                             <ul className="nav secondary-nav">
                                 {categories && categories.map((category, index) => {
-                                    if (index < 60) {
+                                    if (index < 6) {
                                         return <li key={index} className="nav-item"> <div onClick={handleClick(index)} className={(category.slug == currentCategory.slug) ? 'active nav-link' : 'nav-link'} to={'/' + category.slug}><span><i
                                             className={category.IconClassName}></i></span> {category.PayCategory}</div> </li>
+                                    } else {
+
                                     }
+
                                 })}
+                                <AddMoreOptions addMoreOptions={addMoreOptions} handleClick={handleClick} />
                             </ul>
                         </div>
                     </div>
