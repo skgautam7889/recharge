@@ -14,7 +14,7 @@ const AddMoreOptions = (props) => {
                         {
                             addMoreOptions && addMoreOptions.map((category) => (
                                 <>
-                                    <div>
+                                    <div key={category.index}>
                                         <div onClick={handleClick(category.index)} key={category.index}><span><i className={category.IconClassName}> </i> </span> {category.PayCategory}</div>
                                     </div>
                                     <hr />

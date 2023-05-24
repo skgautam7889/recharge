@@ -317,6 +317,25 @@ const Home = (props) => {
 
     };
 
+    const handleClick1 = (index) => () => {
+        setErrorBillerName('');
+        setConnectionNumberError('');
+        setRechargeForm({ type: '', number: '', operator_info: '' })
+        let category = categories[index];
+        history.push(category.slug);
+        setCurrentCategory(category);
+        setSubCategory(null);
+        GetSubCategory(category.PayID);
+        setErrorBillerName("")
+        setBillPayForm({
+            billerInfo: "",
+            ConnectionNumber: "",
+            // amount: 0,
+        })
+        setChargeableAmount(0);
+
+    };
+
     async function GetCircle(billerid) {
         setIsLoading(true);
         const endPoint = 'GetCircle';
@@ -463,9 +482,9 @@ const Home = (props) => {
 
         }
         subCategory.billerParameters[index].ConnectionNumber = event.target.value;
-        console.log("billerParameter===>",billerParameter);
+        console.log("billerParameter===>", billerParameter);
         console.log("event", event.target.value);
-        console.log("subCategory===>",subCategory);
+        console.log("subCategory===>", subCategory);
         setSubCategory(subCategory)
     };
     const numErrorStyle = {
@@ -480,7 +499,7 @@ const Home = (props) => {
         <>
             <div id="main-wrapper">
                 <div id="content">
-                    <div className="bg-secondary">
+                    <div className="bg-secondary desktop-view">
                         <div className="container">
                             <ul className="nav secondary-nav">
                                 {categories && categories.map((category, index) => {
@@ -490,13 +509,103 @@ const Home = (props) => {
                                     }
                                 })}
                                 {
-                                    (addMoreOptions.length > 0) ?(<AddMoreOptions addMoreOptions={addMoreOptions} handleClick={handleClick} />):(<span></span>)
+                                    (addMoreOptions.length > 0) ? (<AddMoreOptions addMoreOptions={addMoreOptions} handleClick={handleClick} />) : (<span></span>)
                                 }
-                                
+
                             </ul>
                         </div>
                     </div>
-                    <section className="container">
+                    <section className="container mt-4 mobile-view">
+                        <div className="bg-white shadow-md rounded p-4">
+                            <div className="row g-4">
+                                <div className="col-lg-12 col-xxl-5">
+                                    <div className="accordion" id="accordionExample">
+                                        {categories && categories.map((category, index) => {
+
+                                            // return <li key={index} className="nav-item"> <div onClick={handleClick(index)} className={(category.slug == currentCategory.slug) ? 'active nav-link' : 'nav-link'} to={'/' + category.slug}><span><i
+                                            //     className={category.IconClassName}></i></span> {category.PayCategory}</div> </li>
+                                            return <div key={index} className="accordion-item">
+                                                <h2 className="accordion-header" id={'headingOne' + index} >
+                                                    {/* <button className={(index == 0) ? 'accordion-button' : 'accordion-button collapsed'} type="button" data-bs-toggle="collapse" data-bs-target={"#collapseOne" + index} aria-expanded="true" aria-controls={"collapseOne" + index}>
+                                                        <span><i className={category.IconClassName}></i></span> &nbsp;{category.PayCategory}
+                                                    </button> */}
+                                                    <button onClick={handleClick1(index)} className={(index == 0) ? 'accordion-button' : 'accordion-button collapsed'} type="button" >
+                                                        <span><i className={category.IconClassName}></i></span> &nbsp;{category.PayCategory}
+                                                    </button>
+                                                </h2>
+                                                <div id={"collapseOne" + index} className={(category.PayID == currentCategory.PayID) ? 'accordion-collapse collapse show' : 'accordion-collapse collapse'} aria-labelledby={'headingOne' + index} data-bs-parent="#accordionExample">
+                                                    <div className="accordion-body">
+
+                                                        <h2 className="text-4 mb-3">{currentCategory.Payheading}</h2>
+                                                        {isNumberTrue ? (
+                                                            <form id="recharge-bill" method="post" onSubmit={handleSubmit}>
+                                                                <div className="mb-3">
+                                                                    <input type="text" className="form-control" data-bv-field="number" id="mobileNumber" required
+                                                                        placeholder={currentCategory.DefaultMessage} name="number" value={rechargeForm.number} onChange={handleInputChange} />
+                                                                    {numberError && <span style={numErrorStyle}>{numberError}</span>}
+                                                                </div>
+                                                                <div className="mb-3">
+                                                                    <SelectOperator subCategoryList={subCategoryList} billerid={billerid} plansInfo={plansInfo} handleOperatorChange={handleOperatorChange} />
+                                                                </div>
+                                                                <div className="input-group mb-3"> <span className="input-group-text"></span> <div onClick={handleShow} href="#"
+                                                                    className="view-plans-link">View Plans</div>
+                                                                    <input className="form-control" id="amount" placeholder="Enter Amount" value={selectedPlan?.amount} required type="text" />
+                                                                </div>
+                                                                {planError && <span style={numErrorStyle}>{planError}</span>}
+                                                                <div className="d-grid">
+                                                                    <button className="btn btn-primary">Continue to Recharge</button>
+                                                                </div>
+                                                            </form>
+                                                        ) : (
+                                                            <form id="recharge-bill" method="post" onSubmit={handleBillPaymentSubmit}>
+                                                                <div className="mb-3">
+                                                                    <select className="form-select" id="operator" name="operator" required="" onChange={handleOperatorChange}>
+                                                                        <option value="">Select Your Operator</option>
+                                                                        {subCategoryList && subCategoryList.map((subCategory, index) => {
+                                                                            return <option key={index} value={index} selected={billPayForm?.billerInfo?.billerid === subCategory.billerid}>{subCategory.BillerName}</option>;
+                                                                        })}
+                                                                    </select>
+                                                                    {errorBillerName && <span style={numErrorStyle}>{errorBillerName}</span>}
+                                                                </div>
+                                                                {
+                                                                    subCategory && subCategory.billerParameters && subCategory.billerParameters.map((billerParameter, index) => (
+                                                                        <div className="mb-3">
+                                                                            <input type="text" className="form-control" data-bv-field={billerParameter?.ConnectionNumber} required value={billerParameter?.ConnectionNumber} onChange={(event) => handleInputBillPaymentChange(index, event)}
+                                                                                placeholder={billerParameter?.ParameterName} name={billerParameter?.ConnectionNumber} />
+                                                                            {(billerParameter?.isError == true) && <span style={numErrorStyle}> {billerParameter?.ErrorMsg} </span>}
+                                                                            <span>{billerParameter?.ErrorMs} {billerParameter?.ConnectionNumber}</span>
+                                                                        </div>
+                                                                    ))
+                                                                }
+                                                                {/* <div className="mb-3">
+                                                                    <input type="text" className="form-control" data-bv-field="ConnectionNumber" id="ConnectionNumber" required value={billPayForm.ConnectionNumber} onChange={handleInputBillPaymentChange}
+                                                                        placeholder={subCategory?.ParameterName} name="ConnectionNumber" />
+                                                                    {connectionNumberError && <span style={numErrorStyle}>{connectionNumberError}</span>}
+                                                                </div> */}
+                                                                {isPartialPay ? (<div className="mb-3">
+                                                                    <input type="text" className="form-control" data-bv-field="amount" id="amount" value={chargeableAmount} readOnly onChange={(event) => setChargeableAmount(event.target.value)}
+                                                                        placeholder="Amount" name="amount" />
+                                                                </div>) : (<div className="mb-3">
+                                                                    <input type="text" className="form-control" data-bv-field="amount" id="amount" value={chargeableAmount} onChange={(event) => setChargeableAmount(event.target.value)}
+                                                                        placeholder="Amount" name="amount" />
+                                                                </div>)}
+                                                                {
+                                                                    (billInformation?.validationid) ? (<div className="d-grid">
+                                                                        <div className="btn btn-primary w-100" onClick={payBillPayment}>Pay</div>
+                                                                    </div>) : (<div className="d-grid"><button className="btn btn-primary">Continue to Pay</button> </div>)
+                                                                }
+                                                            </form>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section className="container desktop-view">
                         <div className="bg-white shadow-md rounded p-4">
                             <div className="row g-4">
                                 <div className="col-lg-4 col-xxl-5">
@@ -536,16 +645,11 @@ const Home = (props) => {
                                                     <div className="mb-3">
                                                         <input type="text" className="form-control" data-bv-field={billerParameter?.ConnectionNumber} required value={billerParameter?.ConnectionNumber} onChange={(event) => handleInputBillPaymentChange(index, event)}
                                                             placeholder={billerParameter?.ParameterName} name={billerParameter?.ConnectionNumber} />
-                                                        {(billerParameter?.isError==true) && <span style={numErrorStyle}> {billerParameter?.ErrorMsg} </span>}
+                                                        {(billerParameter?.isError == true) && <span style={numErrorStyle}> {billerParameter?.ErrorMsg} </span>}
                                                         <span>{billerParameter?.ErrorMs} {billerParameter?.ConnectionNumber}</span>
                                                     </div>
                                                 ))
                                             }
-                                            {/* <div className="mb-3">
-                                                <input type="text" className="form-control" data-bv-field="ConnectionNumber" id="ConnectionNumber" required value={billPayForm.ConnectionNumber} onChange={handleInputBillPaymentChange}
-                                                    placeholder={subCategory?.ParameterName} name="ConnectionNumber" />
-                                                {connectionNumberError && <span style={numErrorStyle}>{connectionNumberError}</span>}
-                                            </div> */}
                                             {isPartialPay ? (<div className="mb-3">
                                                 <input type="text" className="form-control" data-bv-field="amount" id="amount" value={chargeableAmount} readOnly onChange={(event) => setChargeableAmount(event.target.value)}
                                                     placeholder="Amount" name="amount" />

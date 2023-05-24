@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { userService } from "../Services";
 import { PaymentService } from '../Services/PaymentService';
+import PopupComponent from './PopupComponent';
 const Payment = () => {
     const location = useLocation();
     const [selectedPlan, setSelectedPlan] = useState(null);
@@ -13,6 +14,11 @@ const Payment = () => {
     const [activeTab, setActiveTab] = useState('');
     const [upis, setUPI] = useState([]);
     const [wallets, setWallets] = useState([]);
+
+    const [showPopup, setShowPopup] = useState(true);
+  const [htmlContent, setHtmlContent] = useState('');
+
+
     useEffect(() => {
         const recharge_information = localStorage.getItem('recharge_information');
         if (recharge_information) {
@@ -69,14 +75,7 @@ const Payment = () => {
         setUPI(paymentMethods[index]?.paymentValues);
     }
 
-    async function payPaymentRequestwithWallets(data) {
-        setIsLoading(true);
-        const paymentresponse = await PaymentService.payPaymentRequestwithWallets(data);
-        console.log("paymentresponse",paymentresponse);
-        setIsLoading(false);
-    }
-
-    const handlePaymentPay = () =>{
+    const handlePaymentPay = () => {
         console.log("hello");
         const data = {
             "txnid": "Adn1211232234",
@@ -90,9 +89,16 @@ const Payment = () => {
             "surl": "https://apiplayground-response.herokuapp.com/",
             "furl": "https://apiplayground-response.herokuapp.com/",
             "clientid": "0"
-          }
+        }
         payPaymentRequestwithWallets(data);
-
+    }
+    async function payPaymentRequestwithWallets(data) {
+        setIsLoading(true);
+        const paymentresponse = await PaymentService.payPaymentRequestwithWallets(data);
+        setHtmlContent(paymentresponse);
+        setShowPopup(true);
+        console.log("paymentresponse", paymentresponse);
+        setIsLoading(false);
     }
 
     if (isLoading) {
@@ -405,7 +411,7 @@ const Payment = () => {
 
             </div>
             <a id="back-to-top" data-bs-toggle="tooltip" title="Back to Top" href="#"><i className="fa fa-chevron-up"></i></a>
-
+            {/* {showPopup && <PopupComponent htmlContent={htmlContent} />} */}
         </>
     )
 }
