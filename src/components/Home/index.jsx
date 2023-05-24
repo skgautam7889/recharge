@@ -232,7 +232,7 @@ const Home = (props) => {
         //     IPAddress: "61.246.34.128",
         //     MACAddress: "11-AC-58-21-1B-AA"
         // }
-        console.log("subCategory=>", subCategory.billerParameters);
+        // console.log("subCategory=>", subCategory.billerParameters);
         const parametersListData = [];
         subCategory.billerParameters.map((billerParameter, index) => {
             parametersListData.push({
@@ -240,7 +240,7 @@ const Home = (props) => {
                 ConnectionNumber: billerParameter.ConnectionNumber,
             })
         })
-        console.log("parametersListData=====>", parametersListData);
+        // console.log("parametersListData=====>", parametersListData);
         const data = {
             parametersLists: parametersListData,
             BillerID: subCategory?.billerid,
@@ -450,22 +450,23 @@ const Home = (props) => {
         // }));
         // console.log("subCategory",subCategory.billerParameters);
         // let billerParameter = subCategory.billerParameters[index];
-        console.log("subCategory.billerParameters[index]=>", subCategory.billerParameters[index]);
+        // console.log("subCategory.billerParameters[index]=>", subCategory.billerParameters[index]);
 
         const billerParameter = subCategory.billerParameters[index];
         const RegexPattern = new RegExp(billerParameter.RegexPattern);
         if (!RegexPattern.test(event.target.value)) {
             // console.log("If");
             // setConnectionNumberError(subCategory.ErrorMsg);
-            // console.log("else");
+            console.log("error");
             billerParameter.isError = true;
             // return false;
 
         }
         subCategory.billerParameters[index].ConnectionNumber = event.target.value;
-        // console.log("billerParameter===>",billerParameter);
-        // console.log("event", event.target.value);
-        // console.log("subCategory===>",subCategory);
+        console.log("billerParameter===>",billerParameter);
+        console.log("event", event.target.value);
+        console.log("subCategory===>",subCategory);
+        setSubCategory(subCategory)
     };
     const numErrorStyle = {
         color: 'red'
@@ -486,16 +487,15 @@ const Home = (props) => {
                                     if (index < 6) {
                                         return <li key={index} className="nav-item"> <div onClick={handleClick(index)} className={(category.slug == currentCategory.slug) ? 'active nav-link' : 'nav-link'} to={'/' + category.slug}><span><i
                                             className={category.IconClassName}></i></span> {category.PayCategory}</div> </li>
-                                    } else {
-
                                     }
-
                                 })}
-                                <AddMoreOptions addMoreOptions={addMoreOptions} handleClick={handleClick} />
+                                {
+                                    (addMoreOptions.length > 0) ?(<AddMoreOptions addMoreOptions={addMoreOptions} handleClick={handleClick} />):(<span></span>)
+                                }
+                                
                             </ul>
                         </div>
                     </div>
-
                     <section className="container">
                         <div className="bg-white shadow-md rounded p-4">
                             <div className="row g-4">
@@ -511,7 +511,7 @@ const Home = (props) => {
                                             <div className="mb-3">
                                                 <SelectOperator subCategoryList={subCategoryList} billerid={billerid} plansInfo={plansInfo} handleOperatorChange={handleOperatorChange} />
                                             </div>
-                                            <div className="input-group mb-3"> <span className="input-group-text">$</span> <div onClick={handleShow} href="#"
+                                            <div className="input-group mb-3"> <span className="input-group-text"></span> <div onClick={handleShow} href="#"
                                                 className="view-plans-link">View Plans</div>
                                                 <input className="form-control" id="amount" placeholder="Enter Amount" value={selectedPlan?.amount} required type="text" />
                                             </div>
@@ -534,9 +534,10 @@ const Home = (props) => {
                                             {
                                                 subCategory && subCategory.billerParameters && subCategory.billerParameters.map((billerParameter, index) => (
                                                     <div className="mb-3">
-                                                        <input type="text" className="form-control" data-bv-field="ConnectionNumber" required value={billerParameter?.ConnectionNumber} onChange={(event) => handleInputBillPaymentChange(index, event)}
+                                                        <input type="text" className="form-control" data-bv-field={billerParameter?.ConnectionNumber} required value={billerParameter?.ConnectionNumber} onChange={(event) => handleInputBillPaymentChange(index, event)}
                                                             placeholder={billerParameter?.ParameterName} name={billerParameter?.ConnectionNumber} />
-                                                        {billerParameter.isError && <span style={numErrorStyle}> {billerParameter?.ErrorMsg} </span>}
+                                                        {(billerParameter?.isError==true) && <span style={numErrorStyle}> {billerParameter?.ErrorMsg} </span>}
+                                                        <span>{billerParameter?.ErrorMs} {billerParameter?.ConnectionNumber}</span>
                                                     </div>
                                                 ))
                                             }

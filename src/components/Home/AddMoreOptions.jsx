@@ -1,6 +1,7 @@
 import "./addmoreoption.css";
 const AddMoreOptions = (props) => {
     const { addMoreOptions, handleClick } = props;
+    console.log("addMoreOptions===>",addMoreOptions);
     return (
         <li className="nav-item">
             <div className='nav-link'>

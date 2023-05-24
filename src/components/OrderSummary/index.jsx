@@ -182,7 +182,7 @@ const OrderSummary = (props) => {
                                             <p className="col-sm text-muted mb-0 mb-sm-3">Amount:</p>
                                         </div>
                                         <div className="col-6 col-lg-6 text-3">
-                                            <p className="col-sm text-sm-end fw-500">${selectedPlan?.amount} </p>
+                                            <p className="col-sm text-sm-end fw-500">{selectedPlan?.amount} </p>
                                         </div>
                                     </div>
                                     <div className="row">
@@ -199,7 +199,7 @@ const OrderSummary = (props) => {
                                                 <div className="col-sm text-3 fw-600">Payment Amount:</div>
                                             </div>
                                             <div className="col-6 col-lg-6 text-3">
-                                                <div className="col-sm text-sm-end text-5 fw-500">${selectedPlan?.total_pay_amount}</div>
+                                                <div className="col-sm text-sm-end text-5 fw-500">{selectedPlan?.total_pay_amount}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -296,7 +296,7 @@ const OrderSummary = (props) => {
                                                 <div className="col-sm text-3 fw-600">Payment Amount:</div>
                                             </div>
                                             <div className="col-6 col-lg-6 text-3">
-                                                <div className="col-sm text-sm-end text-5 fw-500">${billplanInformation?.amount}</div>
+                                                <div className="col-sm text-sm-end text-5 fw-500">{billplanInformation?.amount}</div>
                                             </div>
                                         </div>
                                     </div>
