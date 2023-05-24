@@ -2330,7 +2330,7 @@ html[dir="rtl"] .featured-box:not(.style-4):not(.style-5).style-3 .featured-box-
 
 /*=== Accordion ===*/
 .accordion .accordion-item {
-  border: none;
+  /* border: none; */
   margin-bottom: 10px;
   margin-bottom: 0.6rem;
   background-color: transparent;
@@ -4994,4 +4994,21 @@ ui-widget-content .ui-state-active {
 
 #styles-switcher #reset-color {
   background: #0071cc;
+}
+
+
+
+/* some changes home page  */
+.mobile-view{
+  display: none;
+}
+@media (max-width: 767.98px) {
+  .desktop-view{
+    display: none;
+    /* display: block; */
+  }
+  .mobile-view{
+    display: block;
+    /* display: none; */
+  }
 }
