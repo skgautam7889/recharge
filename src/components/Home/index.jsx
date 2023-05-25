@@ -518,7 +518,7 @@ const Home = (props) => {
                     <section className="container mt-4 mobile-view">
                         <div className="bg-white shadow-md rounded p-4">
                             <div className="row g-4">
-                                <div className="col-lg-12 col-xxl-5">
+                                <div className="col-lg-4 col-xxl-5">
                                     <div className="accordion" id="accordionExample">
                                         {categories && categories.map((category, index) => {
 
@@ -529,7 +529,7 @@ const Home = (props) => {
                                                     {/* <button className={(index == 0) ? 'accordion-button' : 'accordion-button collapsed'} type="button" data-bs-toggle="collapse" data-bs-target={"#collapseOne" + index} aria-expanded="true" aria-controls={"collapseOne" + index}>
                                                         <span><i className={category.IconClassName}></i></span> &nbsp;{category.PayCategory}
                                                     </button> */}
-                                                    <button onClick={handleClick1(index)} className={(index == 0) ? 'accordion-button' : 'accordion-button collapsed'} type="button" >
+                                                    <button onClick={handleClick1(index)} className={(category.PayID == currentCategory.PayID) ? 'accordion-button' : 'accordion-button collapsed'} type="button" >
                                                         <span><i className={category.IconClassName}></i></span> &nbsp;{category.PayCategory}
                                                     </button>
                                                 </h2>
@@ -601,6 +601,9 @@ const Home = (props) => {
                                             </div>
                                         })}
                                     </div>
+                                </div>
+                                <div className="col-lg-8 col-xxl-7">
+                                    <OfferImageSlider offers={offers} />
                                 </div>
                             </div>
                         </div>

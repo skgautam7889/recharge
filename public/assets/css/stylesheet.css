@@ -2379,7 +2379,7 @@ html[dir="rtl"] .featured-box:not(.style-4):not(.style-5).style-3 .featured-box-
 }
 
 .accordion .accordion-body {
-  padding: 1rem 0 0.4rem 2.25rem;
+  /* padding: 1rem 0 0.4rem 2.25rem; */
 }
 
 .accordion.arrow-end .accordion-header .accordion-button {
