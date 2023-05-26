@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import React, { useState, useEffect, useId} from 'react';
+import React, { useState, useEffect, useId } from 'react';
 import { userService } from "../Services";
 import { PaymentService } from '../Services/PaymentService';
 import PopupComponent from './PopupComponent';
@@ -16,21 +16,29 @@ const Payment = () => {
     const [upis, setUPI] = useState([]);
     const [wallets, setWallets] = useState([]);
 
+
     const [showPopup, setShowPopup] = useState(true);
     const [htmlContent, setHtmlContent] = useState('');
     const [show, setShow] = useState(false);
-
-    const furl = "http://localhost:3000/recharge/#/pay/payment-success";
-    const surl = "http://localhost:3000/recharge/#/pay/payment-success";
+    const [txnid, setTxnid] = useState('');
+    const [cardInfo, setCardInfo] = useState(
+        { card_number: '5123456789012346', expiry_month: '02', expiry_year: '2028', cvv: '52', card_holder_name: 'suraj' })
+        console.log("location===>",location);
+    const furl = window.location.origin+"/recharge/#/pay/payment-success";
+    const surl = window.location.origin+"/recharge/#/pay/payment-cancel";
 
     useEffect(() => {
         const recharge_information = localStorage.getItem('recharge_information');
         if (recharge_information) {
-            setSelectedPlan(JSON.parse(recharge_information))
+            let recharge_info = JSON.parse(recharge_information);
+            setSelectedPlan(recharge_info);
+            setTxnid(recharge_info.txnid);
         }
         const billplan_information = localStorage.getItem('billplan_information');
         if (billplan_information) {
-            setBillInformation(JSON.parse(billplan_information))
+            let billplan_info = JSON.parse(recharge_information);
+            setBillInformation(JSON.parse(billplan_info));
+            setTxnid(billplan_info.txnid);
         }
     }, []);
 
@@ -44,11 +52,27 @@ const Payment = () => {
 
     }, [selectedPlan, billInformation]);
 
+    const handleCardInfo = (event) => {
+        const { name, value } = event.target;
+        setCardInfo((prevProps) => ({
+            ...prevProps,
+            [name]: value
+        }));
+    };
 
     const paypentPayForm = (event) => {
+
         event.preventDefault();
+        // payPaymentRequestWithCard(data)
         console.log("selectedPlan====>", selectedPlan);
     };
+    // async function payPaymentRequestWithCard() {
+    //     setIsLoading(true);
+    //     const paymentMethodList = await PaymentService.payPaymentWithCard(billerid);
+
+    //     setIsLoading(false);
+    // }
+
     async function getPaymentMethodList(billerid) {
         setIsLoading(true);
         const paymentMethodList = await userService.getPaymentMethodList(billerid);
@@ -59,18 +83,18 @@ const Payment = () => {
 
 
     const months = [
-        { 'id': 1, name: "January" },
-        { 'id': 2, name: "February" },
-        { 'id': 3, name: "March" },
-        { 'id': 4, name: "April" },
-        { 'id': 5, name: "May" },
-        { 'id': 6, name: "June" },
-        { 'id': 7, name: "July" },
-        { 'id': 8, name: "August" },
-        { 'id': 9, name: "September" },
-        { 'id': 10, name: "October" },
-        { 'id': 11, name: "November" },
-        { 'id': 12, name: "December" },
+        { 'id': '01', name: "January" },
+        { 'id': '02', name: "February" },
+        { 'id': '03', name: "March" },
+        { 'id': '04', name: "April" },
+        { 'id': '05', name: "May" },
+        { 'id': '06', name: "June" },
+        { 'id': '07', name: "July" },
+        { 'id': '08', name: "August" },
+        { 'id': '09', name: "September" },
+        { 'id': '10', name: "October" },
+        { 'id': '11', name: "November" },
+        { 'id': '12', name: "December" },
     ]
     var years = Array.from(Array(2051 - new Date().getFullYear()), (_, i) => (i + new Date().getFullYear()).toString())
 
@@ -82,34 +106,48 @@ const Payment = () => {
 
     const handleWalletPayment = (index) => {
         let wallet = wallets[index];
-        const data = {
-            "txnid": "Adn1211232234",
-            "amount": "10.00",
-            "firstname": "Adnan",
-            "email": "test@gmail.com",
-            "phone": "9876543210",
-            "productinfo": "iPhone14",
-            pg: wallet.pg,
-            bankcode: wallet?.Bankcode,
-            "surl": "https://apiplayground-response.herokuapp.com/",
-            "furl": "https://apiplayground-response.herokuapp.com/",
-            "clientid": "0"
-        }
-        payPaymentRequestwithWallets(data);
-    }
-    const handleUPIPayment = (index) => {
-        console.log("handleUPIPayment index",index);
-        console.log("selectedPlan===>",selectedPlan)
-        console.log("billInformation==>",billInformation);
-        let txnid = (selectedPlan?.txnid)?selectedPlan?.txnid:(billInformation?.txnid);
-        let upi = upis[index];
-        console.log("upi===>",upi);
+        let txnid = (selectedPlan?.txnid) ? selectedPlan?.txnid : (billInformation?.txnid);
+        // const data = {
+        //     txnid: txnid,
+        //     "amount": "10.00",
+        //     "firstname": "Adnan",
+        //     "email": "test@gmail.com",
+        //     phone: "7839295503",
+        //     "productinfo": "iPhone14",
+        //     pg: wallet.pg,
+        //     bankcode: "@".wallet?.Bankcode,
+        //     surl: surl,
+        //     furl: furl,
+        //     "clientid": "0"
+        //   }
         const data = {
             txnid: txnid,
             "amount": "10.00",
             "firstname": "Adnan",
             "email": "test@gmail.com",
-            "phone": "9876543210",
+            phone: "7839295503",
+            "productinfo": "iPhone14",
+            pg: wallet.pg,
+            bankcode: wallet?.Bankcode,
+            surl: surl,
+            furl: furl,
+            "clientid": "10"
+        }
+        payPaymentRequestwithWallets(data);
+    }
+    const handleUPIPayment = (index) => {
+        console.log("handleUPIPayment index", index);
+        console.log("selectedPlan===>", selectedPlan)
+        console.log("billInformation==>", billInformation);
+        let txnid = (selectedPlan?.txnid) ? selectedPlan?.txnid : (billInformation?.txnid);
+        let upi = upis[index];
+        console.log("upi===>", upi);
+        const data = {
+            txnid: txnid,
+            "amount": "10.00",
+            "firstname": "Adnan",
+            "email": "test@gmail.com",
+            phone: 8707673327,
             "productinfo": "iPhone14",
             pg: upi.pg,
             bankcode: upi.Bankcode,
@@ -117,12 +155,43 @@ const Payment = () => {
             surl: surl,
             furl: furl,
             "clientid": "0"
-          }
+        }
         payPaymentRequestwithUPI(data);
     }
     async function payPaymentRequestwithWallets(data) {
         setIsLoading(true);
-        const paymentresponse = await PaymentService.payPaymentRequestwithUPI(data);
+        const paymentresponse = await PaymentService.payPaymentRequestwithWallets(data);
+        setHtmlContent(paymentresponse);
+        setShow(true);
+        setShowPopup(true);
+        console.log("paymentresponse", paymentresponse);
+        setIsLoading(false);
+    }
+    const handlePayPaymentWithCard = () => {
+        console.log("cardInfo==>",cardInfo);
+        const data = {
+            txnid: txnid,
+            "amount": "10.00",
+            "firstname": "Adnan",
+            "email": "test@gmail.com",
+            "phone": "9876543210",
+            "productinfo": "iPhone14",
+            pg: "cc",
+            bankcode: "No Need, api will get it from card",
+            surl: surl,
+            furl: furl,
+            "ccnum": "5123456789012346",
+            "ccexpmon": "05",
+            "ccexpyr": "2028",
+            "ccvv": "123",
+            "ccname": "Any",
+            "clientid": "0"
+        }
+        payPaymentRequestWitCard(data);
+    }
+    async function payPaymentRequestWitCard(data) {
+        setIsLoading(true);
+        const paymentresponse = await PaymentService.payPaymentWithCard(data);
         setHtmlContent(paymentresponse);
         setShow(true);
         setShowPopup(true);
@@ -131,7 +200,7 @@ const Payment = () => {
     }
     async function payPaymentRequestwithUPI(data) {
         setIsLoading(true);
-        const paymentresponse = await PaymentService.payPaymentRequestwithWallets(data);
+        const paymentresponse = await PaymentService.payPaymentRequestwithUPI(data);
         setHtmlContent(paymentresponse);
         setShow(true);
         setShowPopup(true);
@@ -200,16 +269,16 @@ const Payment = () => {
 
                                             {activeTab === 'CreditCard' && <div className="tab-pane fade show active" id="CreditCard" role="tabpanel" aria-labelledby="first-tab">
                                                 <h3 className="text-5 mb-4">Enter Credit Card Details</h3>
-                                                <form id="payment" method="post" onSubmit={paypentPayForm}>
+                                                <form id="payment" method="post" onSubmit={handlePayPaymentWithCard}>
                                                     <div className="row g-3">
                                                         <div className="col-12">
-                                                            <label className="form-label" htmlFor="cardNumber">Enter Credit Card Number</label>
-                                                            <input type="text" className="form-control" data-bv-field="cardnumber" id="cardNumber" required placeholder="Card Number" />
+                                                            <label className="form-label" htmlFor="card_number">Enter Credit Card Number</label>
+                                                            <input type="text" className="form-control" data-bv-field="card_number" id="card_number" name='card_number' required placeholder="Card Number" value={cardInfo.card_number} onChange={handleCardInfo} />
                                                         </div>
                                                         <div className="col-lg-4">
                                                             <div>
                                                                 <label className="form-label" htmlFor="expiryMonth">Expiry Month</label>
-                                                                <select id="expiryMonth" className="form-select" required="">
+                                                                <select id="expiryMonth" className="form-select" required="" name='expiry_month' value={cardInfo.expiry_month} onChange={handleCardInfo}>
                                                                     <option value="">Expiry Month</option>
                                                                     <option value="1">January</option>
                                                                     {
@@ -223,7 +292,7 @@ const Payment = () => {
                                                         <div className="col-lg-4">
                                                             <div>
                                                                 <label className="form-label" htmlFor="expiryYear">Expiry Year</label>
-                                                                <select id="expiryYear" className="form-select" required="">
+                                                                <select id="expiryYear" className="form-select" required="" name='expiry_year' value={cardInfo.expiry_year} onChange={handleCardInfo}>
                                                                     <option value="">Expiry Year</option>
                                                                     {
                                                                         years && years.map((year, index) => (
@@ -235,11 +304,11 @@ const Payment = () => {
                                                         </div>
                                                         <div className="col-lg-4">
                                                             <label className="form-label" htmlFor="cvvNumber">CVV</label>
-                                                            <input type="text" className="form-control" data-bv-field="cvvnumber" id="cvvNumber" required placeholder="CVV Number" />
+                                                            <input type="text" className="form-control" data-bv-field="cvvnumber" id="cvvNumber" required placeholder="CVV Number" name='cvv' value={cardInfo.cvv} onChange={handleCardInfo} />
                                                         </div>
                                                         <div className="col-12">
                                                             <label className="form-label" htmlFor="cardHolderName">Card Holder Name</label>
-                                                            <input type="text" className="form-control" data-bv-field="cardholdername" id="cardHolderName" required placeholder="Card Holder Name" />
+                                                            <input type="text" className="form-control" data-bv-field="cardholdername" id="cardHolderName" required placeholder="Card Holder Name" name='card_holder_name' value={cardInfo.card_holder_name} onChange={handleCardInfo} />
                                                         </div>
                                                         <div className="col-12">
                                                             <div className="form-check">
@@ -247,7 +316,7 @@ const Payment = () => {
                                                                 <label className="form-check-label" htmlFor="save-card">Save my card Details.</label>
                                                             </div>
                                                         </div>
-                                                        <div className="col-12 d-grid"> <button className="btn btn-primary" href="#">Proceed to Pay</button> </div>
+                                                        <div className="col-12 d-grid"> <button className="btn btn-primary" href="#">Proceed to Pay span</button> </div>
                                                     </div>
                                                 </form>
                                             </div>}
@@ -365,7 +434,7 @@ const Payment = () => {
                                                             <div key={index} className="col-12">
                                                                 <div className="row">
                                                                     <div className='col-2'>
-                                                                        <input type="radio" name='upi' onClick={()=>handleUPIPayment(index)} />
+                                                                        <input type="radio" name='upi' onClick={() => handleUPIPayment(index)} />
                                                                     </div>
                                                                     <div className="col-2">
                                                                         <div style={{ height: "60px", width: "60px" }}>
@@ -398,7 +467,7 @@ const Payment = () => {
                                                                         <span>{wallet?.PaymentName}</span>
                                                                     </div>
                                                                     <div className="col-4">
-                                                                        <span><button className='btn btn-primary d-flex align-items-center justify-content-center' onClick={()=>handleWalletPayment(index)}>Pay</button></span>
+                                                                        <span><button className='btn btn-primary d-flex align-items-center justify-content-center' onClick={() => handleWalletPayment(index)}>Pay</button></span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -427,7 +496,7 @@ const Payment = () => {
                                             <div className="bg-light-2 rounded p-4 mb-4">
                                                 <h3 className="text-5 mb-4">Payable Amount</h3>
                                                 <ul className="list-unstyled">
-                                                <li className="mb-2">Transaction ID: <span className="float-end text-4 fw-500 text-dark">{selectedPlan?.txnid}</span></li>
+                                                    <li className="mb-2">Transaction ID: <span className="float-end text-4 fw-500 text-dark">{selectedPlan?.txnid}</span></li>
                                                     <li className="mb-2">Amount <span className="float-end text-4 fw-500 text-dark">{billInformation?.billlist[0]?.billamount}</span></li>
                                                     <li className="mb-2">Remaining Amount <span className="float-end text-4 fw-500 text-dark">{billInformation?.billlist[0]?.billamount - billInformation?.amount}</span></li>
                                                     {

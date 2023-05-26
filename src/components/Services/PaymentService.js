@@ -1,6 +1,7 @@
 const apiUrl = "https://pg.pkgrp.in/PGWPaymentByCard/";
 const PaymentRequestwithWallets = "PaymentRequestwithWallets";
 const PaymentRequestwithUPI = "PaymentRequestwithUPI";
+const PaymentWithCard = "PaymentWithCard";
 const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*'
@@ -24,6 +25,19 @@ export const PaymentService = {
     payPaymentRequestwithUPI: async (data) => {
         try {
             const response = await fetch(apiUrl + PaymentRequestwithUPI, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(data)
+            });
+            const text = await response.text();
+            return text;
+        } catch (error) {
+            console.error(error);
+        }
+    },
+    payPaymentWithCard: async (data) => {
+        try {
+            const response = await fetch(apiUrl + PaymentWithCard, {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify(data)
