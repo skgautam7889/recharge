@@ -43,7 +43,7 @@ function App() {
       <Route exact path='/' component={Home} />
       <Route exact path="/pay/order-summary" component={OrderSummary} />
       <Route exact path="/pay/payment" component={Payment} />
-      <Route exact path= 'pay/payment-success' component={PaymentSuccess} />
+      <Route exact path= '/pay/payment-success' component={PaymentSuccess} />
       {/* <Redirect to='/' /> */}
       <Footer/>
     </HashRouter>

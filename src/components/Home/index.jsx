@@ -6,10 +6,7 @@ import OfferImageSlider from "../OfferImageSlider";
 import { userService } from "../Services";
 
 import { Modal, Button } from "react-bootstrap";
-
-import Select from 'react-select';
 import SelectOperator from "../SelectOperator";
-import { useContext } from 'react';
 import AddMoreOptions from "./AddMoreOptions";
 const Home = (props) => {
     const [isLoading, setIsLoading] = useState(true);
@@ -191,7 +188,9 @@ const Home = (props) => {
         selectedPlan.total_pay_amount = selectedPlan.amount;
         selectedPlan.discount = 0;
         selectedPlan.is_recharge = true;
-
+        // var txnid = (new Date()).getTime()+ Math.random().toString(16).slice(2);
+        var txnid = Math.random().toString(16).slice(2);
+        selectedPlan.txnid = txnid;
         const recharge_information = JSON.stringify(selectedPlan);
 
         localStorage.removeItem('billplan_information');
@@ -288,14 +287,15 @@ const Home = (props) => {
             localStorage.removeItem('recharge_information');
             billInformation.ConnectionNumber = subCategory.billerParameters[0]?.ConnectionNumber;//billPayForm.ConnectionNumber;
             billInformation.amount = chargeableAmount;
+            // var txnid = (new Date()).getTime()+ Math.random().toString(16).slice(2);
+            var txnid = Math.random().toString(16).slice(2);
+            billInformation.txnid = txnid;
             // setBillPayForm({ amount: billInformation?.billlist[0]?.billamount,  });
             const billplan_information = JSON.stringify(billInformation);
             localStorage.setItem('billplan_information', billplan_information);
             localStorage.setItem('is_recharge', false);
             history.push('/pay/order-summary');
         }
-
-        console.log("billInformation=>", billInformation)
     }
 
     const handleClick = (index) => () => {
@@ -526,9 +526,6 @@ const Home = (props) => {
                                             //     className={category.IconClassName}></i></span> {category.PayCategory}</div> </li>
                                             return <div key={index} className="accordion-item">
                                                 <h2 className="accordion-header" id={'headingOne' + index} >
-                                                    {/* <button className={(index == 0) ? 'accordion-button' : 'accordion-button collapsed'} type="button" data-bs-toggle="collapse" data-bs-target={"#collapseOne" + index} aria-expanded="true" aria-controls={"collapseOne" + index}>
-                                                        <span><i className={category.IconClassName}></i></span> &nbsp;{category.PayCategory}
-                                                    </button> */}
                                                     <button onClick={handleClick1(index)} className={(category.PayID == currentCategory.PayID) ? 'accordion-button' : 'accordion-button collapsed'} type="button" >
                                                         <span><i className={category.IconClassName}></i></span> &nbsp;{category.PayCategory}
                                                     </button>
