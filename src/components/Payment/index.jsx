@@ -11,7 +11,7 @@ const Payment = () => {
     const [discounAmount, setDiscounAmount] = useState(0);
     const [paymentMethods, setPaymentMethods] = useState([]);
     const [billInformation, setBillInformation] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('');
     const [upis, setUPI] = useState([]);
     const [wallets, setWallets] = useState([]);
@@ -23,7 +23,7 @@ const Payment = () => {
     const [txnid, setTxnid] = useState('');
     const [cardInfo, setCardInfo] = useState(
         { card_number: '5123456789012346', expiry_month: '02', expiry_year: '2028', cvv: '52', card_holder_name: 'suraj' })
-        console.log("location===>",location);
+        
     const furl = window.location.origin+"/recharge/#/pay/payment-success";
     const surl = window.location.origin+"/recharge/#/pay/payment-cancel";
 
@@ -32,21 +32,22 @@ const Payment = () => {
         if (recharge_information) {
             let recharge_info = JSON.parse(recharge_information);
             setSelectedPlan(recharge_info);
-            setTxnid(recharge_info.txnid);
+            
         }
         const billplan_information = localStorage.getItem('billplan_information');
         if (billplan_information) {
-            let billplan_info = JSON.parse(recharge_information);
-            setBillInformation(JSON.parse(billplan_info));
-            setTxnid(billplan_info.txnid);
+            setBillInformation(JSON.parse(billplan_information));
+            
         }
     }, []);
 
     useEffect(() => {
         if (selectedPlan?.billerid) {
+            setTxnid(selectedPlan?.txnid);
             getPaymentMethodList(selectedPlan?.billerid);
         }
         if (billInformation?.billerid) {
+            setTxnid(billInformation?.txnid);
             getPaymentMethodList(billInformation?.billerid);
         }
 
@@ -64,7 +65,6 @@ const Payment = () => {
 
         event.preventDefault();
         // payPaymentRequestWithCard(data)
-        console.log("selectedPlan====>", selectedPlan);
     };
     // async function payPaymentRequestWithCard() {
     //     setIsLoading(true);
@@ -99,6 +99,9 @@ const Payment = () => {
     var years = Array.from(Array(2051 - new Date().getFullYear()), (_, i) => (i + new Date().getFullYear()).toString())
 
     const handleTabClick = (index) => {
+        
+        setCardInfo({ card_number: '', expiry_month: '', expiry_year: '', cvv: '', card_holder_name: '' })
+            
         setActiveTab(paymentMethods[index]?.Paymethod);
         setUPI(paymentMethods[index]?.paymentValues);
         setWallets(paymentMethods[index]?.paymentValues)
@@ -136,21 +139,18 @@ const Payment = () => {
         payPaymentRequestwithWallets(data);
     }
     const handleUPIPayment = (index) => {
-        console.log("handleUPIPayment index", index);
-        console.log("selectedPlan===>", selectedPlan)
-        console.log("billInformation==>", billInformation);
         let txnid = (selectedPlan?.txnid) ? selectedPlan?.txnid : (billInformation?.txnid);
         let upi = upis[index];
-        console.log("upi===>", upi);
+        console.log("upi===>",upi);
         const data = {
             txnid: txnid,
             "amount": "10.00",
             "firstname": "Adnan",
             "email": "test@gmail.com",
-            phone: 8707673327,
+            phone: '8707673327',
             "productinfo": "iPhone14",
             pg: upi.pg,
-            bankcode: upi.Bankcode,
+            bankcode: upi?.Bankcode,
             "vpa": "anything@payu",
             surl: surl,
             furl: furl,
@@ -164,11 +164,9 @@ const Payment = () => {
         setHtmlContent(paymentresponse);
         setShow(true);
         setShowPopup(true);
-        console.log("paymentresponse", paymentresponse);
         setIsLoading(false);
     }
     const handlePayPaymentWithCard = () => {
-        console.log("cardInfo==>",cardInfo);
         const data = {
             txnid: txnid,
             "amount": "10.00",
@@ -195,7 +193,6 @@ const Payment = () => {
         setHtmlContent(paymentresponse);
         setShow(true);
         setShowPopup(true);
-        console.log("paymentresponse", paymentresponse);
         setIsLoading(false);
     }
     async function payPaymentRequestwithUPI(data) {
@@ -204,7 +201,6 @@ const Payment = () => {
         setHtmlContent(paymentresponse);
         setShow(true);
         setShowPopup(true);
-        console.log("paymentresponse", paymentresponse);
         setIsLoading(false);
     }
     const handleClose = () => setShow(false);
@@ -322,16 +318,16 @@ const Payment = () => {
                                             </div>}
                                             {activeTab === 'DebitCard' && <div className="tab-pane fade show active" id="DebitCard" role="tabpanel" aria-labelledby="first-tab">
                                                 <h3 className="text-5 mb-4">Enter Debit Card Details</h3>
-                                                <form id="payment" method="post" onSubmit={paypentPayForm}>
+                                                <form id="payment" method="post" onSubmit={handlePayPaymentWithCard}>
                                                     <div className="row g-3">
                                                         <div className="col-12">
-                                                            <label className="form-label" htmlFor="cardNumber">Enter Debit Card Number</label>
-                                                            <input type="text" className="form-control" data-bv-field="cardnumber" id="cardNumber" required placeholder="Card Number" />
+                                                            <label className="form-label" htmlFor="card_number">Enter Credit Card Number</label>
+                                                            <input type="text" className="form-control" data-bv-field="card_number" id="card_number" name='card_number' required placeholder="Card Number" value={cardInfo.card_number} onChange={handleCardInfo} />
                                                         </div>
                                                         <div className="col-lg-4">
                                                             <div>
                                                                 <label className="form-label" htmlFor="expiryMonth">Expiry Month</label>
-                                                                <select id="expiryMonth" className="form-select" required="">
+                                                                <select id="expiryMonth" className="form-select" required="" name='expiry_month' value={cardInfo.expiry_month} onChange={handleCardInfo}>
                                                                     <option value="">Expiry Month</option>
                                                                     <option value="1">January</option>
                                                                     {
@@ -345,7 +341,7 @@ const Payment = () => {
                                                         <div className="col-lg-4">
                                                             <div>
                                                                 <label className="form-label" htmlFor="expiryYear">Expiry Year</label>
-                                                                <select id="expiryYear" className="form-select" required="">
+                                                                <select id="expiryYear" className="form-select" required="" name='expiry_year' value={cardInfo.expiry_year} onChange={handleCardInfo}>
                                                                     <option value="">Expiry Year</option>
                                                                     {
                                                                         years && years.map((year, index) => (
@@ -357,11 +353,11 @@ const Payment = () => {
                                                         </div>
                                                         <div className="col-lg-4">
                                                             <label className="form-label" htmlFor="cvvNumber">CVV</label>
-                                                            <input type="text" className="form-control" data-bv-field="cvvnumber" id="cvvNumber" required placeholder="CVV Number" />
+                                                            <input type="text" className="form-control" data-bv-field="cvvnumber" id="cvvNumber" required placeholder="CVV Number" name='cvv' value={cardInfo.cvv} onChange={handleCardInfo} />
                                                         </div>
                                                         <div className="col-12">
                                                             <label className="form-label" htmlFor="cardHolderName">Card Holder Name</label>
-                                                            <input type="text" className="form-control" data-bv-field="cardholdername" id="cardHolderName" required placeholder="Card Holder Name" />
+                                                            <input type="text" className="form-control" data-bv-field="cardholdername" id="cardHolderName" required placeholder="Card Holder Name" name='card_holder_name' value={cardInfo.card_holder_name} onChange={handleCardInfo} />
                                                         </div>
                                                         <div className="col-12">
                                                             <div className="form-check">
@@ -369,22 +365,22 @@ const Payment = () => {
                                                                 <label className="form-check-label" htmlFor="save-card">Save my card Details.</label>
                                                             </div>
                                                         </div>
-                                                        <div className="col-12 d-grid"> <button className="btn btn-primary" href="#">Proceed to Pay</button> </div>
+                                                        <div className="col-12 d-grid"> <button className="btn btn-primary" href="#">Proceed to Pay span</button> </div>
                                                     </div>
                                                 </form>
                                             </div>}
                                             {activeTab === 'PrepaidCard' && <div className="tab-pane fade show active" id="PrepaidCard" role="tabpanel" aria-labelledby="first-tab">
                                                 <h3 className="text-5 mb-4">Enter Prepaid Card Details</h3>
-                                                <form id="payment" method="post" onSubmit={paypentPayForm}>
+                                                <form id="payment" method="post" onSubmit={handlePayPaymentWithCard}>
                                                     <div className="row g-3">
                                                         <div className="col-12">
-                                                            <label className="form-label" htmlFor="cardNumber">Enter Prepaid Card Number</label>
-                                                            <input type="text" className="form-control" data-bv-field="cardnumber" id="cardNumber" required placeholder="Card Number" />
+                                                            <label className="form-label" htmlFor="card_number">Enter Credit Card Number</label>
+                                                            <input type="text" className="form-control" data-bv-field="card_number" id="card_number" name='card_number' required placeholder="Card Number" value={cardInfo.card_number} onChange={handleCardInfo} />
                                                         </div>
                                                         <div className="col-lg-4">
                                                             <div>
                                                                 <label className="form-label" htmlFor="expiryMonth">Expiry Month</label>
-                                                                <select id="expiryMonth" className="form-select" required="">
+                                                                <select id="expiryMonth" className="form-select" required="" name='expiry_month' value={cardInfo.expiry_month} onChange={handleCardInfo}>
                                                                     <option value="">Expiry Month</option>
                                                                     <option value="1">January</option>
                                                                     {
@@ -398,7 +394,7 @@ const Payment = () => {
                                                         <div className="col-lg-4">
                                                             <div>
                                                                 <label className="form-label" htmlFor="expiryYear">Expiry Year</label>
-                                                                <select id="expiryYear" className="form-select" required="">
+                                                                <select id="expiryYear" className="form-select" required="" name='expiry_year' value={cardInfo.expiry_year} onChange={handleCardInfo}>
                                                                     <option value="">Expiry Year</option>
                                                                     {
                                                                         years && years.map((year, index) => (
@@ -410,11 +406,11 @@ const Payment = () => {
                                                         </div>
                                                         <div className="col-lg-4">
                                                             <label className="form-label" htmlFor="cvvNumber">CVV</label>
-                                                            <input type="text" className="form-control" data-bv-field="cvvnumber" id="cvvNumber" required placeholder="CVV Number" />
+                                                            <input type="text" className="form-control" data-bv-field="cvvnumber" id="cvvNumber" required placeholder="CVV Number" name='cvv' value={cardInfo.cvv} onChange={handleCardInfo} />
                                                         </div>
                                                         <div className="col-12">
                                                             <label className="form-label" htmlFor="cardHolderName">Card Holder Name</label>
-                                                            <input type="text" className="form-control" data-bv-field="cardholdername" id="cardHolderName" required placeholder="Card Holder Name" />
+                                                            <input type="text" className="form-control" data-bv-field="cardholdername" id="cardHolderName" required placeholder="Card Holder Name" name='card_holder_name' value={cardInfo.card_holder_name} onChange={handleCardInfo} />
                                                         </div>
                                                         <div className="col-12">
                                                             <div className="form-check">
@@ -422,7 +418,7 @@ const Payment = () => {
                                                                 <label className="form-check-label" htmlFor="save-card">Save my card Details.</label>
                                                             </div>
                                                         </div>
-                                                        <div className="col-12 d-grid"> <button className="btn btn-primary" href="#">Proceed to Pay</button> </div>
+                                                        <div className="col-12 d-grid"> <button className="btn btn-primary" href="#">Proceed to Pay span</button> </div>
                                                     </div>
                                                 </form>
                                             </div>}
@@ -483,7 +479,7 @@ const Payment = () => {
                                             <div className="bg-light-2 rounded p-4 mb-4">
                                                 <h3 className="text-5 mb-4">Payable Amount</h3>
                                                 <ul className="list-unstyled">
-                                                    <li className="mb-2">Transaction ID: <span className="float-end text-4 fw-500 text-dark">{selectedPlan?.txnid}</span></li>
+                                                    <li className="mb-2">Transaction ID: <span className="float-end text-4 fw-500 text-dark">{txnid}</span></li>
                                                     <li className="mb-2">Amount <span className="float-end text-4 fw-500 text-dark">{selectedPlan?.amount}</span></li>
                                                     {
                                                         selectedPlan?.discount ? (<li className="mb-2">Discount <span className="text-success">({selectedPlan?.discount} Off!)</span> <span className="float-end text-4 fw-500 text-dark">-{selectedPlan?.discount}</span></li>) : (<span></span>)
@@ -496,7 +492,7 @@ const Payment = () => {
                                             <div className="bg-light-2 rounded p-4 mb-4">
                                                 <h3 className="text-5 mb-4">Payable Amount</h3>
                                                 <ul className="list-unstyled">
-                                                    <li className="mb-2">Transaction ID: <span className="float-end text-4 fw-500 text-dark">{selectedPlan?.txnid}</span></li>
+                                                    <li className="mb-2">Transaction ID: <span className="float-end text-4 fw-500 text-dark">{txnid}</span></li>
                                                     <li className="mb-2">Amount <span className="float-end text-4 fw-500 text-dark">{billInformation?.billlist[0]?.billamount}</span></li>
                                                     <li className="mb-2">Remaining Amount <span className="float-end text-4 fw-500 text-dark">{billInformation?.billlist[0]?.billamount - billInformation?.amount}</span></li>
                                                     {

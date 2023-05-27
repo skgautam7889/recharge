@@ -196,8 +196,6 @@ const Home = (props) => {
         localStorage.removeItem('billplan_information');
         localStorage.setItem('recharge_information', recharge_information);
         history.push('/pay/order-summary');
-
-        // history.push('pay/order-summary',{state});
     };
 
 
@@ -263,7 +261,6 @@ const Home = (props) => {
             // const billplan_information = JSON.stringify(fetchBillPlanData);
             // localStorage.setItem('billplan_information', billplan_information);
             // localStorage.setItem('is_recharge', false);
-            // history.push('/pay/order-summary');
             // console.log("fetchBillPlanData==>", fetchBillPlanData?.billlist[0]?.billamount)
         } else {
             console.log("invalid connection number=======>")
