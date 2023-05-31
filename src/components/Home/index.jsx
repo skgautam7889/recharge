@@ -4,6 +4,7 @@ import ReferEarnSection from "../ReferEarnSection";
 import React, { useState, useEffect } from 'react';
 import OfferImageSlider from "../OfferImageSlider";
 import { userService } from "../Services";
+import Select from 'react-select';
 
 import { Modal, Button } from "react-bootstrap";
 import SelectOperator from "../SelectOperator";
@@ -91,16 +92,26 @@ const Home = (props) => {
             subcategory.label = <div><img src={subcategory.BillerLogo} height="20px" width="20px" />{subcategory.BillerName} </div>;
             return subcategory;
         });
+        setSelectedOption(null)
         setSubCategoryList(options1);
         // setIsLoading(false);
 
     }
     async function getGetOperatorDetails(number) {
+        console.log("subCategoryList===>", subCategoryList);
         setIsLoading(true);
         const endPoint = 'GetOperatorDetails';
         const operatorDetails = await userService.getGetOperatorDetailsList(endPoint, number);
         plansInfo.operator = operatorDetails?.billerid;
         plansInfo.circle = operatorDetails?.circle_name;
+        if (operatorDetails?.billerid) {
+
+            let result = subCategoryList.filter(operator => operator.billerid == operatorDetails?.billerid);
+            if (result.length > 0) {
+                setSelectedOption(result[0]);
+            }
+            console.log("resultresultresult===>", result);
+        }
         setBillerid(operatorDetails?.billerid);
         // setCircleName(operatorDetails.circle_name);
         setPlansInfo(plansInfo);
@@ -385,10 +396,13 @@ const Home = (props) => {
     }, [plansInfo]);
 
 
+    const [selectedOption, setSelectedOption] = useState(null);
     const handleOperatorChange = (e) => {
+        console.log("e=== home page===>", e);
+        setSelectedOption(e);
         setPayNumber('');
         setErrorBillerName("")
-        let currentSubCategory = subCategoryList[e.target.value];
+        let currentSubCategory = e;//subCategoryList[e.target.value];
         setBillPayForm({
             billerInfo: currentSubCategory,
             ConnectionNumber: "",
@@ -539,7 +553,19 @@ const Home = (props) => {
                                                                     {numberError && <span style={numErrorStyle}>{numberError}</span>}
                                                                 </div>
                                                                 <div className="mb-3">
-                                                                    <SelectOperator subCategoryList={subCategoryList} billerid={billerid} plansInfo={plansInfo} handleOperatorChange={handleOperatorChange} />
+                                                                    {/* <SelectOperator subCategoryList={subCategoryList} billerid={billerid} plansInfo={plansInfo} handleOperatorChange={handleOperatorChange} selectedOption={selectedOption} /> */}
+                                                                    <Select
+                                                                        placeholder="Select Your Operator"
+                                                                        value={selectedOption}
+                                                                        options={subCategoryList}
+                                                                        onChange={props.handleOperatorChange}
+                                                                        getOptionLabel={e => (
+                                                                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                                <span><img height={45} width={45} src={e.BillerLogo} alt={e.BillerName} /></span>
+                                                                                <span style={{ marginLeft: 5 }}>{e.BillerName}</span>
+                                                                            </div>
+                                                                        )}
+                                                                    />
                                                                 </div>
                                                                 <div className="input-group mb-3"> <span className="input-group-text"></span> <div onClick={handleShow} href="#"
                                                                     className="view-plans-link">View Plans</div>
@@ -553,12 +579,26 @@ const Home = (props) => {
                                                         ) : (
                                                             <form id="recharge-bill" method="post" onSubmit={handleBillPaymentSubmit}>
                                                                 <div className="mb-3">
-                                                                    <select className="form-select" id="operator" name="operator" required="" onChange={handleOperatorChange}>
+
+                                                                    {/* <select className="form-select" id="operator" name="operator" required="" onChange={handleOperatorChange}>
                                                                         <option value="">Select Your Operator</option>
                                                                         {subCategoryList && subCategoryList.map((subCategory, index) => {
                                                                             return <option key={index} value={index} selected={billPayForm?.billerInfo?.billerid === subCategory.billerid}>{subCategory.BillerName}</option>;
                                                                         })}
-                                                                    </select>
+                                                                    </select> */}
+
+                                                                    <Select
+                                                                        placeholder="Select Your Operator"
+                                                                        value={selectedOption}
+                                                                        options={subCategoryList}
+                                                                        onChange={handleOperatorChange}
+                                                                        getOptionLabel={e => (
+                                                                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                                <span><img height={45} width={45} src={e.BillerLogo} alt={e.BillerName} /></span>
+                                                                                <span style={{ marginLeft: 5 }}>{e.BillerName}</span>
+                                                                            </div>
+                                                                        )}
+                                                                    />
                                                                     {errorBillerName && <span style={numErrorStyle}>{errorBillerName}</span>}
                                                                 </div>
                                                                 {
@@ -615,7 +655,19 @@ const Home = (props) => {
                                                 {numberError && <span style={numErrorStyle}>{numberError}</span>}
                                             </div>
                                             <div className="mb-3">
-                                                <SelectOperator subCategoryList={subCategoryList} billerid={billerid} plansInfo={plansInfo} handleOperatorChange={handleOperatorChange} />
+                                                <Select
+                                                    placeholder="Select Your Operator"
+                                                    value={selectedOption}
+                                                    options={subCategoryList}
+                                                    onChange={props.handleOperatorChange}
+                                                    getOptionLabel={e => (
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <span><img height={45} width={45} src={e.BillerLogo} alt={e.BillerName} /></span>
+                                                            <span style={{ marginLeft: 5 }}>{e.BillerName}</span>
+                                                        </div>
+                                                    )}
+                                                />
+                                                {/* <SelectOperator subCategoryList={subCategoryList} billerid={billerid} plansInfo={plansInfo} handleOperatorChange={handleOperatorChange} /> */}
                                             </div>
                                             <div className="input-group mb-3"> <span className="input-group-text"></span> <div onClick={handleShow} href="#"
                                                 className="view-plans-link">View Plans</div>
@@ -629,12 +681,24 @@ const Home = (props) => {
                                     ) : (
                                         <form id="recharge-bill" method="post" onSubmit={handleBillPaymentSubmit}>
                                             <div className="mb-3">
-                                                <select className="form-select" id="operator" name="operator" required="" onChange={handleOperatorChange}>
+                                                {/* <select className="form-select" id="operator" name="operator" required="" onChange={handleOperatorChange}>
                                                     <option value="">Select Your Operator</option>
                                                     {subCategoryList && subCategoryList.map((subCategory, index) => {
                                                         return <option key={index} value={index} selected={billPayForm?.billerInfo?.billerid === subCategory.billerid}>{subCategory.BillerName}</option>;
                                                     })}
-                                                </select>
+                                                </select> */}
+                                                <Select
+                                                    placeholder="Select Your Operator"
+                                                    value={selectedOption}
+                                                    options={subCategoryList}
+                                                    onChange={handleOperatorChange}
+                                                    getOptionLabel={e => (
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <span><img height={45} width={45} src={e.BillerLogo} alt={e.BillerName} /></span>
+                                                            <span style={{ marginLeft: 5 }}>{e.BillerName}</span>
+                                                        </div>
+                                                    )}
+                                                />
                                                 {errorBillerName && <span style={numErrorStyle}>{errorBillerName}</span>}
                                             </div>
                                             {
