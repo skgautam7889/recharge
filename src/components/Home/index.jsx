@@ -561,7 +561,7 @@ const Home = (props) => {
                                                                         onChange={props.handleOperatorChange}
                                                                         getOptionLabel={e => (
                                                                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                                                <span><img height={45} width={45} src={e.BillerLogo} alt={e.BillerName} /></span>
+                                                                                <span><img height={45} width={45} src={e.BillerLogo} alt='' /></span>
                                                                                 <span style={{ marginLeft: 5 }}>{e.BillerName}</span>
                                                                             </div>
                                                                         )}
@@ -594,7 +594,7 @@ const Home = (props) => {
                                                                         onChange={handleOperatorChange}
                                                                         getOptionLabel={e => (
                                                                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                                                <span><img height={45} width={45} src={e.BillerLogo} alt={e.BillerName} /></span>
+                                                                                <span><img height={45} width={45} src={e.BillerLogo} alt="" /></span>
                                                                                 <span style={{ marginLeft: 5 }}>{e.BillerName}</span>
                                                                             </div>
                                                                         )}
@@ -662,7 +662,7 @@ const Home = (props) => {
                                                     onChange={props.handleOperatorChange}
                                                     getOptionLabel={e => (
                                                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                            <span><img height={45} width={45} src={e.BillerLogo} alt={e.BillerName} /></span>
+                                                            <span><img height={45} width={45} src={e.BillerLogo} alt="" /></span>
                                                             <span style={{ marginLeft: 5 }}>{e.BillerName}</span>
                                                         </div>
                                                     )}
@@ -694,7 +694,7 @@ const Home = (props) => {
                                                     onChange={handleOperatorChange}
                                                     getOptionLabel={e => (
                                                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                            <span><img height={45} width={45} src={e.BillerLogo} alt={e.BillerName} /></span>
+                                                            <span><img height={45} width={45} src={e.BillerLogo} alt="" /></span>
                                                             <span style={{ marginLeft: 5 }}>{e.BillerName}</span>
                                                         </div>
                                                     )}
@@ -826,7 +826,7 @@ const Home = (props) => {
                                     onChange={props.handleOperatorChange}
                                     getOptionLabel={e => (
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                                            <span><img height={45} width={45} src={e.BillerLogo} alt={e.BillerName} /></span>
+                                            <span><img height={45} width={45} src={e.BillerLogo} alt="" /></span>
                                             <span style={{ marginLeft: 5 }}>{e.BillerName}</span>
                                         </div>
                                     )}

@@ -36,3 +36,8 @@
     transform: rotate(360deg);
   }
 }
+
+.css-b62m3t-container .css-1nmdiq5-menu{
+  background-color: white;
+  z-index: 99999;
+}
