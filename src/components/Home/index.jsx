@@ -818,7 +818,19 @@ const Home = (props) => {
                                         return <option key={index} value={subCategory.billerid} selected={subCategory.billerid == billerid}>{billerid} {subCategory.billerid} {subCategory.BillerName}</option>
                                     })}
                                 </select> */}
-                                <SelectOperator subCategoryList={subCategoryList} billerid={billerid} plansInfo={plansInfo} handleOperatorChange={handleOperatorChange} />
+                                {/* <SelectOperator subCategoryList={subCategoryList} billerid={billerid} plansInfo={plansInfo} handleOperatorChange={handleOperatorChange} /> */}
+                                <Select
+                                    placeholder="Select Your Operator"
+                                    value={selectedOption}
+                                    options={subCategoryList}
+                                    onChange={props.handleOperatorChange}
+                                    getOptionLabel={e => (
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <span><img height={45} width={45} src={e.BillerLogo} alt={e.BillerName} /></span>
+                                            <span style={{ marginLeft: 5 }}>{e.BillerName}</span>
+                                        </div>
+                                    )}
+                                />
                             </div>
                             <div className="col-12 col-sm-6 col-lg-4">
                                 <select className="form-select" required="" name="circle" value={plansInfo.circle} onChange={handlePlanChange}>
