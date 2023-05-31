@@ -1,4 +1,26 @@
+import { useHistory, useParams, useLocation  } from 'react-router-dom';
 const PaymentCancel = () => {
+    const location = useLocation();
+    const status = new URLSearchParams(location.search).get("status");
+    const txnid = new URLSearchParams(location.search).get("txnid");
+    const firstname = new URLSearchParams(location.search).get("firstname");
+    const lastname = new URLSearchParams(location.search).get("lastname");
+    const amount = new URLSearchParams(location.search).get("amount");
+    const phone = new URLSearchParams(location.search).get("phone");
+
+    const data = {
+        status: status,
+        txnid:txnid,
+        firstname:firstname,
+        lastname:lastname,
+        amount:amount,
+        phone:phone
+    }
+
+    // const {status} = useParams();
+    console.log("status=>",status);
+    const history = useHistory();
+    console.log("history=>",history);
     return (
         <><div id="content">
             <div className="container">
@@ -40,12 +62,12 @@ const PaymentCancel = () => {
                         <div className="bg-white shadow-sm rounded p-4 p-lg-5 mb-4">
                             <div className="row">
                                 <div className="col-sm text-muted">Transactions ID</div>
-                                <div className="col-sm text-sm-end fw-600">PHDF173076359</div>
+                                <div className="col-sm text-sm-end fw-600">{data.txnid}</div>
                             </div>
                             <hr />
                             <div className="row">
                                 <div className="col-sm text-muted">Date</div>
-                                <div className="col-sm text-sm-end fw-600">06-Feb-2019</div>
+                                <div className="col-sm text-sm-end fw-600">{new Date().toLocaleString() + ""}</div>
                             </div>
                             <hr />
                             <div className="row">
@@ -65,7 +87,7 @@ const PaymentCancel = () => {
                             <hr />
                             <div className="row">
                                 <div className="col-sm text-muted">Mobile No</div>
-                                <div className="col-sm text-sm-end fw-600">(+91) 9898989898</div>
+                                <div className="col-sm text-sm-end fw-600">(+91) {data.phone}</div>
                             </div>
                             <hr />
                             <div className="row">
@@ -75,7 +97,7 @@ const PaymentCancel = () => {
                             <hr />
                             <div className="row">
                                 <div className="col-sm text-muted">Payment Amount</div>
-                                <div className="col-sm text-sm-end text-6 fw-500">$135</div>
+                                <div className="col-sm text-sm-end text-6 fw-500">{data.amount}</div>
                             </div>
                         </div>
                         <div className="text-center"> <a href="#" className="btn-link text-muted mx-3 my-2 align-items-center d-inline-flex"><span className="text-5 me-2"><i className="far fa-file-pdf"></i></span>Save as PDF</a> <a href="#" className="btn-link text-muted mx-3 my-2 align-items-center d-inline-flex"><span className="text-5 me-2"><i className="fas fa-print"></i></span>Print Receipt</a> <a href="#" className="btn-link text-muted mx-3 my-2 align-items-center d-inline-flex"><span className="text-5 me-2"><i className="far fa-envelope"></i></span>Email Receipt</a>

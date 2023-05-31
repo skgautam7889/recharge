@@ -128,7 +128,7 @@ const Payment = () => {
             "amount": "10.00",
             "firstname": "Adnan",
             "email": "test@gmail.com",
-            phone: "7839295503",
+            phone: "8707673327",
             "productinfo": "iPhone14",
             pg: wallet.pg,
             bankcode: wallet?.Bankcode,
@@ -144,17 +144,17 @@ const Payment = () => {
         console.log("upi===>",upi);
         const data = {
             txnid: txnid,
-            "amount": "10.00",
-            "firstname": "Adnan",
-            "email": "test@gmail.com",
+            amount: "10.00",
+            firstname: "Adnan",
+            email: "test@gmail.com",
             phone: '8707673327',
-            "productinfo": "iPhone14",
+            productinfo: "iPhone14",
             pg: upi.pg,
             bankcode: upi?.Bankcode,
-            "vpa": "anything@payu",
+            vpa: "anything@payu",
             surl: surl,
             furl: furl,
-            "clientid": "0"
+            clientid: "0"
         }
         payPaymentRequestwithUPI(data);
     }
@@ -169,21 +169,21 @@ const Payment = () => {
     const handlePayPaymentWithCard = () => {
         const data = {
             txnid: txnid,
-            "amount": "10.00",
-            "firstname": "Adnan",
-            "email": "test@gmail.com",
-            "phone": "9876543210",
-            "productinfo": "iPhone14",
+            amount: "10.00",
+            firstname: "Adnan",
+            email: "test@gmail.com",
+            phone: "8707673327",
+            productinfo: "iPhone14",
             pg: "cc",
             bankcode: "No Need, api will get it from card",
             surl: surl,
             furl: furl,
-            "ccnum": "5123456789012346",
-            "ccexpmon": "05",
-            "ccexpyr": "2028",
-            "ccvv": "123",
-            "ccname": "Any",
-            "clientid": "0"
+            ccnum: "5123456789012346",
+            ccexpmon: "05",
+            ccexpyr: "2028",
+            ccvv: "123",
+            ccname: "Any",
+            clientid: "0"
         }
         payPaymentRequestWitCard(data);
     }
