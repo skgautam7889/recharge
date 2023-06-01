@@ -544,12 +544,13 @@ const Home = (props) => {
                                                                     {numberError && <span style={numErrorStyle}>{numberError}</span>}
                                                                 </div>
                                                                 <div className="mb-3">
+                                                                    
                                                                     {/* <SelectOperator subCategoryList={subCategoryList} billerid={billerid} plansInfo={plansInfo} handleOperatorChange={handleOperatorChange} selectedOption={selectedOption} /> */}
                                                                     <Select
                                                                         placeholder="Select Your Operator"
                                                                         value={selectedOption}
                                                                         options={subCategoryList}
-                                                                        onChange={props.handleOperatorChange}
+                                                                        onChange={handleOperatorChange}
                                                                         getOptionLabel={e => (
                                                                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                                                                 <span><img height={45} width={45} src={e.BillerLogo} alt='' /></span>
