@@ -23,21 +23,21 @@ const Payment = () => {
     const [txnid, setTxnid] = useState('');
     const [cardInfo, setCardInfo] = useState(
         { card_number: '5123456789012346', expiry_month: '02', expiry_year: '2028', cvv: '52', card_holder_name: 'suraj' })
-        
-    const furl = window.location.origin+"/recharge/#/pay/payment-success";
-    const surl = window.location.origin+"/recharge/#/pay/payment-cancel";
+
+    const furl = window.location.origin + "/recharge/#/pay/payment-success";
+    const surl = window.location.origin + "/recharge/#/pay/payment-cancel";
 
     useEffect(() => {
         const recharge_information = localStorage.getItem('recharge_information');
         if (recharge_information) {
             let recharge_info = JSON.parse(recharge_information);
             setSelectedPlan(recharge_info);
-            
+
         }
         const billplan_information = localStorage.getItem('billplan_information');
         if (billplan_information) {
             setBillInformation(JSON.parse(billplan_information));
-            
+
         }
     }, []);
 
@@ -99,9 +99,9 @@ const Payment = () => {
     var years = Array.from(Array(2051 - new Date().getFullYear()), (_, i) => (i + new Date().getFullYear()).toString())
 
     const handleTabClick = (index) => {
-        
+
         setCardInfo({ card_number: '', expiry_month: '', expiry_year: '', cvv: '', card_holder_name: '' })
-            
+
         setActiveTab(paymentMethods[index]?.Paymethod);
         setUPI(paymentMethods[index]?.paymentValues);
         setWallets(paymentMethods[index]?.paymentValues)
@@ -141,7 +141,7 @@ const Payment = () => {
     const handleUPIPayment = (index) => {
         let txnid = (selectedPlan?.txnid) ? selectedPlan?.txnid : (billInformation?.txnid);
         let upi = upis[index];
-        console.log("upi===>",upi);
+        console.log("upi===>", upi);
         const data = {
             txnid: txnid,
             amount: "10.00",
@@ -520,6 +520,7 @@ const Payment = () => {
                     {/* <Modal.Title>Browse Plans</Modal.Title> */}
                 </Modal.Header>
                 <Modal.Body>
+                    
                     {/* <div className="modal-body">
 
                         <div className="plans">
@@ -539,7 +540,12 @@ const Payment = () => {
                         </div>
                     </div> */}
                 </Modal.Body>
-                <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+                <iframe
+                        className="content"
+                        title="HTML Content"
+                        srcDoc={htmlContent}
+                    />
+                {/* <div dangerouslySetInnerHTML={{ __html: htmlContent }} /> */}
                 {/* <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                         Close
