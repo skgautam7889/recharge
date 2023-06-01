@@ -176,13 +176,6 @@ const Home = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        // const recharge_info = {
-        //     selectedPlan: selectedPlan,
-        //     recharge_form: rechargeForm,
-        //     number: rechargeForm.number,
-        //     plan_description: selectedPlan.plan_description
-        // }
-        console.log("selectedPlan==>", selectedPlan);
         selectedPlan.number = rechargeForm.number;
         if (!rechargeForm.number) {
             setNumberError("Please enter number")
@@ -398,7 +391,6 @@ const Home = (props) => {
 
     const [selectedOption, setSelectedOption] = useState(null);
     const handleOperatorChange = (e) => {
-        console.log("e=== home page===>", e);
         setSelectedOption(e);
         setPayNumber('');
         setErrorBillerName("")
@@ -414,7 +406,6 @@ const Home = (props) => {
             currentSubCategory.billerParameters[index].ConnectionNumber = null;
 
         })
-        console.log("currentSubCategory===>", currentSubCategory);
         setSubCategory(currentSubCategory);
         setBillerid(currentSubCategory?.billerid);
         (currentSubCategory?.PartialPay === "N") ? setIsPartialPay(true) : setIsPartialPay(false);
@@ -487,15 +478,15 @@ const Home = (props) => {
         if (!RegexPattern.test(event.target.value)) {
             // console.log("If");
             // setConnectionNumberError(subCategory.ErrorMsg);
-            console.log("error");
+            // console.log("error");
             billerParameter.isError = true;
             // return false;
 
         }
         subCategory.billerParameters[index].ConnectionNumber = event.target.value;
-        console.log("billerParameter===>", billerParameter);
-        console.log("event", event.target.value);
-        console.log("subCategory===>", subCategory);
+        // console.log("billerParameter===>", billerParameter);
+        // console.log("event", event.target.value);
+        // console.log("subCategory===>", subCategory);
         setSubCategory(subCategory)
     };
     const numErrorStyle = {
@@ -659,7 +650,7 @@ const Home = (props) => {
                                                     placeholder="Select Your Operator"
                                                     value={selectedOption}
                                                     options={subCategoryList}
-                                                    onChange={props.handleOperatorChange}
+                                                    onChange={handleOperatorChange}
                                                     getOptionLabel={e => (
                                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                                             <span><img height={45} width={45} src={e.BillerLogo} alt="" /></span>
@@ -823,7 +814,7 @@ const Home = (props) => {
                                     placeholder="Select Your Operator"
                                     value={selectedOption}
                                     options={subCategoryList}
-                                    onChange={props.handleOperatorChange}
+                                    onChange={handleOperatorChange}
                                     getOptionLabel={e => (
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <span><img height={45} width={45} src={e.BillerLogo} alt="" /></span>
