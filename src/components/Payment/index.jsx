@@ -126,16 +126,16 @@ const Payment = () => {
         //   }
         const data = {
             txnid: txnid,
-            "amount": "10.00",
-            "firstname": "Adnan",
-            "email": "test@gmail.com",
+            amount: amount,
+            firstname: "Adnan",
+            email: "skgautam7889@gmail.com",
             phone: "8707673327",
-            "productinfo": "iPhone14",
-            pg: wallet.pg,
+            productinfo: "iPhone14",
+            pg: wallet?.pg,
             bankcode: wallet?.Bankcode,
             surl: surl,
             furl: furl,
-            "clientid": "10"
+            clientid: "10"
         }
         payPaymentRequestwithWallets(data);
     }
@@ -145,14 +145,14 @@ const Payment = () => {
         console.log("upi===>", upi);
         const data = {
             txnid: txnid,
-            amount: "10.00",
+            amount: amount,
             firstname: "Adnan",
-            email: "test@gmail.com",
+            email: "skgautam7889@gmail.com",
             phone: '8707673327',
             productinfo: "iPhone14",
             pg: upi.pg,
             bankcode: upi?.Bankcode,
-            vpa: "anything@payu",
+            vpa: "7839295506@payu",
             surl: surl,
             furl: furl,
             clientid: "0"
