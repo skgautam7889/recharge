@@ -8,7 +8,7 @@ const Payment = () => {
     const location = useLocation();
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [isDiscountApply, setIsDiscountApply] = useState(false);
-    const [discounAmount, setDiscounAmount] = useState(0);
+    const [amount, setAmount] = useState(0);
     const [paymentMethods, setPaymentMethods] = useState([]);
     const [billInformation, setBillInformation] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +44,7 @@ const Payment = () => {
     useEffect(() => {
         if (selectedPlan?.billerid) {
             setTxnid(selectedPlan?.txnid);
+            setAmount(selectedPlan?.amount);
             getPaymentMethodList(selectedPlan?.billerid);
         }
         if (billInformation?.billerid) {
@@ -169,9 +170,9 @@ const Payment = () => {
     const handlePayPaymentWithCard = () => {
         const data = {
             txnid: txnid,
-            amount: "10.00",
+            amount: amount,
             firstname: "Adnan",
-            email: "test@gmail.com",
+            email: "skgautam7889@gmail.com",
             phone: "8707673327",
             productinfo: "iPhone14",
             pg: "cc",

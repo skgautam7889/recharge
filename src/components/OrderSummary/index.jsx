@@ -56,6 +56,10 @@ const OrderSummary = (props) => {
         setCouponCode(event.target.value)
     }
     const applyCouponCode = async (e) => {
+        if(!couponCode){
+            setCouponCodeError("Please enter coupon code")
+            return false;
+        }
         let discount = 0;
         if (!isDiscountApply) {
             const data = {
