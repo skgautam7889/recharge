@@ -49,6 +49,7 @@ const Payment = () => {
         }
         if (billInformation?.billerid) {
             setTxnid(billInformation?.txnid);
+            setAmount(billInformation?.amount);
             getPaymentMethodList(billInformation?.billerid);
         }
 
