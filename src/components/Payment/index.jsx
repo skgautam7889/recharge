@@ -170,7 +170,7 @@ const Payment = () => {
     }
     const handlePayPaymentWithCard = () => {
         const data = {
-            txnid: txnid,
+            txnid: Math.random().toString(16).slice(2),
             amount: amount,
             firstname: "Adnan",
             email: "skgautam7889@gmail.com",
@@ -522,31 +522,14 @@ const Payment = () => {
                     {/* <Modal.Title>Browse Plans</Modal.Title> */}
                 </Modal.Header>
                 <Modal.Body>
-                    
-                    {/* <div className="modal-body">
-
-                        <div className="plans">
-                            <div className="row align-items-center">
-                                <div className="col-4 col-lg-2 text-5 text-center">Amount</div>
-
-                                <div className="col-4 col-lg-2 text-5 text-center">Top Plan</div>
-
-                                <div className="col-4 col-lg-2 text-5 text-center">Validity Days</div>
-
-                                <div className="col-3 col-lg-1 text-5 text-center">Category</div>
-
-                                <div className="col-5 col-lg-3 text-5 text-center">Description</div>
-
-                                <hr className="my-4" />
-                            </div>
-                        </div>
-                    </div> */}
+               
                 </Modal.Body>
                 <iframe
+                        src='https://acssimuat.payubiz.in/pg/axis/axishome'
                         className="content"
                         title="HTML Content"
-                        srcDoc={htmlContent}
                     />
+                
                 {/* <div dangerouslySetInnerHTML={{ __html: htmlContent }} /> */}
                 {/* <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
