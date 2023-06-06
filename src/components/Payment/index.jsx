@@ -145,7 +145,7 @@ const Payment = () => {
         let upi = upis[index];
         console.log("upi===>", upi);
         const data = {
-            txnid: txnid,
+            txnid: Math.random().toString(16).slice(2),
             amount: amount,
             firstname: "Adnan",
             email: "skgautam7889@gmail.com",
@@ -525,23 +525,15 @@ const Payment = () => {
                
                 </Modal.Body>
                 <iframe
-                        src='https://acssimuat.payubiz.in/pg/axis/axishome'
                         className="content"
                         title="HTML Content"
+                        srcDoc={htmlContent}
                     />
                 
                 {/* <div dangerouslySetInnerHTML={{ __html: htmlContent }} /> */}
-                {/* <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={handleClose}>
-                        Save Changes
-                    </Button>
-                </Modal.Footer> */}
+                
             </Modal>
             <a id="back-to-top" data-bs-toggle="tooltip" title="Back to Top" href="#"><i className="fa fa-chevron-up"></i></a>
-            {/* {showPopup && <PopupComponent htmlContent={htmlContent} />} */}
         </>
     )
 }
